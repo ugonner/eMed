@@ -1,0 +1,162 @@
+import { Dispatch, SetStateAction, useState } from "react";
+import {
+  ILocationAddress,
+  ISocialMediaLinks,
+} from "../dtos/aid-service-profile.dto";
+import {
+  addCircleSharp,
+  closeCircle,
+  cloudSharp,
+  compassSharp,
+} from "ionicons/icons";
+import {
+  IonAvatar,
+  IonButton,
+  IonCol,
+  IonContent,
+  IonGrid,
+  IonIcon,
+  IonInput,
+  IonItem,
+  IonLabel,
+  IonModal,
+  IonRow,
+} from "@ionic/react";
+
+export interface ILocationAddressProps {
+  locationAddress: ILocationAddress;
+  setLocationAddress: Dispatch<SetStateAction<ILocationAddress>>;
+  onCompletion?: () => void;
+}
+export interface ILinkInput {
+  inputName: "street" | "city" | "state" | "country" | "landmark";
+  label: string;
+  icon?: string;
+}
+
+export const LocationAddressManager = ({
+  locationAddress,
+  setLocationAddress,
+  onCompletion,
+}: ILocationAddressProps) => {
+  const [openLocationAddressOverlay, setOpenLocationAddressOverlay] =
+    useState(false);
+  const [addressData, setAddressData] =
+    useState<ILocationAddress>(locationAddress);
+
+  const locationInputs: ILinkInput[] = [
+    {
+      inputName: "street",
+      label: "enter street address",
+      icon: cloudSharp,
+    },
+    {
+      inputName: "city",
+      label: "Enter city name",
+    },
+    {
+      inputName: "state",
+      label: "Enter state",
+    },
+    {
+      inputName: "country",
+      label: "Enter country",
+    },
+    {
+      inputName: "landmark",
+      label: "Enter nearest landmark",
+    },
+  ];
+  return (
+    <div>
+      <IonGrid>
+        <IonRow>
+          <IonCol 
+          size="12"
+           role="button"
+           aria-label="oen location inputs"
+                onClick={() =>
+                  setOpenLocationAddressOverlay(!openLocationAddressOverlay)
+                }
+          >
+            <LocationAddressCard
+              locationAddress={addressData || ({} as ILocationAddress)}
+            />
+          </IonCol>
+         
+        </IonRow>
+      </IonGrid>
+      <IonModal
+        isOpen={openLocationAddressOverlay}
+        onDidDismiss={() => setOpenLocationAddressOverlay(false)}
+      >
+        <IonContent>
+          <IonItem>
+            <IonButton
+              fill="clear"
+              slot="end"
+              onClick={() => setOpenLocationAddressOverlay(false)}
+            >
+              <IonIcon icon={closeCircle}></IonIcon>
+            </IonButton>
+          </IonItem>
+          <div style={{ overflow: "auto" }}>
+            {locationInputs.map((locationInput, index) => (
+              <IonItem key={index} detailIcon={locationInput.icon}>
+                <IonInput
+                  name={locationInput.inputName}
+                  label={locationInput.label}
+                  labelPlacement="floating"
+                  value={(addressData as any)[locationInput.inputName]}
+                  onInput={(evt) => {
+                    const { value, name } = evt.currentTarget;
+                    setAddressData({
+                      ...addressData,
+                      [name]: value,
+                    } as unknown as ILocationAddress);
+                  }}
+                />
+              </IonItem>
+            ))}
+            <div className="ion-text-center">
+              <IonButton
+                color={"primary"}
+                expand="full"
+                onClick={() => {
+                  setLocationAddress({ ...addressData });
+                  setOpenLocationAddressOverlay(false);
+                  if (onCompletion) onCompletion();
+                }}
+              >
+                Save
+              </IonButton>
+            </div>
+          </div>
+        </IonContent>
+      </IonModal>
+    </div>
+  );
+};
+
+export const LocationAddressCard = ({
+  locationAddress,
+}: {
+  locationAddress: ILocationAddress;
+}) => {
+  return (
+    <IonItem>
+      <IonAvatar>
+        <IonIcon icon={compassSharp} size="large"></IonIcon>
+      </IonAvatar>
+      <IonLabel>
+        <h2>Location Address</h2>
+        {Object.keys(locationAddress || {}).map((item, index) => (
+          <p key={index}>
+            <span>{item}</span>:{" "}
+            <span>{((locationAddress || {}) as any)[item]} </span>
+          </p>
+        ))}
+      </IonLabel>
+    </IonItem>
+  );
+};
