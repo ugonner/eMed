@@ -11,7 +11,7 @@ import {
 import { IBooking } from "../interfaces/booking";
 import { BookingActionsMenu } from "./BookingActionsMenu";
 import { BookingCard } from "./BookingCard";
-import { LocationAddressCard } from "../../aid-service/components/LocationAddress";
+import { LocationAddressCard } from "./LocationAddress";
 import { VirtualLocationAddressCard } from "./VirtualLocationManager";
 import { getBookingFields } from "../datasets/booking-fields";
 import { squareSharp, starSharp } from "ionicons/icons";
@@ -42,11 +42,6 @@ export const BookingDetail = ({ booking }: IBookingDetailProps) => {
       <IonRow>
         <IonCol size="6">
           <LocationAddressCard locationAddress={booking.locationAddress} />
-        </IonCol>
-        <IonCol size="6">
-          <VirtualLocationAddressCard
-            virtualLocationAddress={booking.virtualLocationAddress}
-          />
         </IonCol>
       </IonRow>
 
@@ -120,46 +115,43 @@ export const BookingDetail = ({ booking }: IBookingDetailProps) => {
 };
 
 export const BookingCostCard = ({ booking }: { booking: IBooking }) => {
-  const serviceRate = booking.isVirtualLocation
-    ? Number(booking.aidService?.videoCallRate)
-    : Number(booking.aidService?.onSiteRate);
-  const subTotal = Number((serviceRate * Number(booking.duration)) / 1000);
   const taxRate = 7.5;
-  const taxCost = Math.ceil((taxRate * subTotal) / 100);
-  const totalCost = taxCost + subTotal;
+  const serviceRate = Number(booking.aidService?.serviceRate);
+  const taxCost = (taxRate / 100) * serviceRate;
+
+    const transportationCost = /Anambra/i.test(booking.locationAddress?.state || "")
+      ? 5000
+      : 10000;
+  const subTotal = serviceRate + transportationCost
+  const totalAmount = serviceRate + taxCost + transportationCost;
 
   return (
     <IonList>
       <IonItem>
-        <span>Service Duration</span>
-        <span slot="end">
-          {Object.keys(ServiceDurations)
-            .find(
-              (duration) =>
-                (ServiceDurations as any)[duration] === booking.duration
-            )
-            ?.replace(/(\d+)/, "$1 ")}
-        </span>
-      </IonItem>
-      <IonItem>
         <span>
-          {booking.isVirtualLocation
-            ? "Virtual Service Rate"
-            : "Onsite Service Rate"}
+          Service Rate
         </span>
         <span slot="end">{formatCurrency(serviceRate, "NGN")}</span>
       </IonItem>
       <IonItem>
+        <span>
+          Transport Rate
+        </span>
+        <span slot="end">{formatCurrency(transportationCost, "NGN")}</span>
+      </IonItem>
+
+      <IonItem>
         <span>Sub Total</span>
         <span slot="end">{formatCurrency(subTotal, "NGN")}</span>
       </IonItem>
+
       <IonItem>
         <span>Total</span>
         <IonLabel slot="end">
           <p>
             {taxRate}% VAT = {formatCurrency(taxCost, "NGN")}
           </p>
-          {formatCurrency(Number(booking.totalAmount || totalCost), "NGN")}
+          {formatCurrency(Number(booking.totalAmount || totalAmount), "NGN")}
         </IonLabel>
       </IonItem>
     </IonList>

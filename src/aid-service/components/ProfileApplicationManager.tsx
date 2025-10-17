@@ -3,8 +3,7 @@ import { usePresentToast } from "../../utils";
 import { IFileAndObjectUrl } from "../../file/components/MultipleFiles";
 import {
   AidServiceProfileDTO,
-  ILocationAddress,
-  ISocialMediaLinks,
+  ILocationAddress
 } from "../dtos/aid-service-profile.dto";
 import {
   IonButton,
@@ -24,7 +23,7 @@ import {
   saveSharp,
 } from "ionicons/icons";
 import { SingleFile } from "../../file/components/SingleFile";
-import { LocationAddressManager } from "./LocationAddress";
+import { LocationAddressManager } from "../../Booking/components/LocationAddress";
 import { SocialMediaLinksManager } from "./SocialMediaLinks";
 import { uploadFiles } from "../../file/utils/filehooks";
 import { APIBaseURL, postData } from "../../shared/api/base";
@@ -36,13 +35,13 @@ import { AidServiceRoutes } from "../enums/routes";
 
 export interface IAplyAidServiceProfileProps {
   aidServiceProfile?: IAidServiceProfile;
-  aidServiceIdNumber?: number;
+  userId: string;
   onCompletion?: () => void;
 }
 
 export const ProfileApplicationManager = ({
   aidServiceProfile,
-  aidServiceIdNumber,
+  userId,
   onCompletion,
 }: IAplyAidServiceProfileProps) => {
   const { setLoading, handleAsyncError } = useAsyncHelpersContext();
@@ -50,21 +49,10 @@ export const ProfileApplicationManager = ({
   
   const router = useIonRouter();
 
-  const aidServiceId: number =
-    Number(queryParams.get("asi")) || Number(aidServiceIdNumber) || Number(aidServiceProfile?.aidService?.id);
-  const businessDocumentfileInputRef = useRef<HTMLInputElement>();
-  const mediaFileInputRef = useRef<HTMLInputElement>();
-  const [selectedBusinessDocumentFile, setSelectedBusinessDocumentFile] =
-    useState<IFileAndObjectUrl | null>(null);
-  const [selectedMediaFile, setSelectedMediaFile] =
-    useState<IFileAndObjectUrl | null>(null);
-
+ 
   const [pageNumber, setPageNumber] = useState(1);
   const [locationAddress, setLocationAddress] = useState<ILocationAddress>(
     (aidServiceProfile?.locationAddress || {}) as ILocationAddress
-  );
-  const [socialMediaLinks, setSocialMediaLinks] = useState<ISocialMediaLinks>(
-    (aidServiceProfile?.socialMediaLinks || {}) as ISocialMediaLinks
   );
 
   const inputFields: string[] = ["contactPhoneNumber"];
@@ -76,39 +64,18 @@ export const ProfileApplicationManager = ({
 
   const saveAidServiceProfile = async () => {
     try {
-      if (!aidServiceId) throw new Error("No aid service is selecte");
-      if (!aidServiceProfileDto?.description?.trim().length) {
-        setPageNumber(1);
-        throw new Error("Description is required");
-      }
       if (
         locationAddress &&
         (!locationAddress?.street || !locationAddress?.city)
       ) {
-        setPageNumber(2);
         throw new Error("Location street and city are require");
       }
       const dto: AidServiceProfileDTO = {
         ...(aidServiceProfileDto || {}),
-        aidServiceId,
         locationAddress,
-        socialMediaLinks,
       };
       setLoading({ isLoading: true, loadingMessage: "saving profile" });
-      let businessFileUrl = "";
-      let mediaFileUrl = "";
-      if (selectedBusinessDocumentFile) {
-        const res = await uploadFiles([selectedBusinessDocumentFile]);
-        if (res) businessFileUrl = res[0]?.attachmentUrl;
-        dto.businessDocumentUrl = businessFileUrl;
-      }
-      if (selectedMediaFile) {
-        const res = await uploadFiles([selectedMediaFile]);
-        if (res) mediaFileUrl = res[0].attachmentUrl;
-        dto.mediaFile = mediaFileUrl;
-      }
-
-      await postData(`${APIBaseURL}/aid-service/profile/application`, {
+      const res = await postData<IAidServiceProfile>(`${APIBaseURL}/aid-service/profile/application?ui=${userId}`, {
         method: "post",
         ...dto,
       });
@@ -116,7 +83,7 @@ export const ProfileApplicationManager = ({
       setLoading({ isLoading: false, loadingMessage: "" });
       setAidServiceProfileDto({ ...(aidServiceProfileDto || {}), ...dto });
       if (onCompletion) onCompletion();
-      else router.push(`${AidServiceRoutes.AID_SERVICE_SINGLE}?asi=${aidServiceId}`)
+      else router.push(`${AidServiceRoutes.AID_SERVICE_PROFILE}?aspi=${res.id}`)
     } catch (error) {
       setLoading({ isLoading: false, loadingMessage: "" });
       handleAsyncError(error, "Error saving profile application");
@@ -129,9 +96,7 @@ export const ProfileApplicationManager = ({
         <IonGrid>
           <IonRow>
             {[
-              "Business Information",
-              "Contact Information",
-              "Business File Uploads",
+              "Contact Information"
             ].map((item, index) => (
               <IonCol key={index} size="6">
                 <div
@@ -146,13 +111,6 @@ export const ProfileApplicationManager = ({
                 </div>
               </IonCol>
             ))}
-            <IonCol size="6">
-              <VerificationManager
-                aidServiceProfile={
-                  aidServiceProfile || ({} as IAidServiceProfile)
-                }
-              />
-            </IonCol>
           </IonRow>
         </IonGrid>
 
@@ -162,29 +120,7 @@ export const ProfileApplicationManager = ({
               <IonRow>
                 <IonCol size="12" sizeSm="3"></IonCol>
                 <IonCol size="12" sizeSm="6">
-                  <IonItem>
-                    <IonInput
-                    type="text"
-                    label="Your Business Name"
-                    labelPlacement="floating"
-                    placeholder="Ugonna Signs"
-                    value={aidServiceProfileDto?.name}
-                    onIonInput={(evt) => {
-                      setAidServiceProfileDto({...aidServiceProfileDto, name: (evt.detail.value as string) } as AidServiceProfileDTO)
-                    }}
-                    />
-
-                  </IonItem>
-                  <IonTextarea
-                    label="Describe your service briefly"
-                    labelPlacement="floating"
-                    onInput={(evt) => {
-                      setAidServiceProfileDto({
-                        ...(aidServiceProfileDto || {}),
-                        description: evt.currentTarget.value,
-                      } as AidServiceProfileDTO);
-                    }}
-                  />
+                  
                   <div>
                     {inputFields.map((inputField, index) => (
                       <IonCol size="12" key={index}>
@@ -210,92 +146,30 @@ export const ProfileApplicationManager = ({
                     ))}
                   </div>
                 </IonCol>
-                <IonCol size="12" sizeSm="3"></IonCol>
-              </IonRow>
-            </>
-          )}
-
-          {pageNumber === 2 && (
-            <IonRow>
-              <IonCol size="12">
+                 <IonCol size="12">
                 <LocationAddressManager
                   locationAddress={locationAddress}
                   setLocationAddress={setLocationAddress}
                 />
               </IonCol>
-              <IonCol size="12">
-                <SocialMediaLinksManager
-                  socialMediaLinks={socialMediaLinks}
-                  setSocialMediaLinks={setSocialMediaLinks}
-                />
-              </IonCol>
-            </IonRow>
+              </IonRow>
+            </>
           )}
-          {pageNumber === 3 && (
-            <IonRow>
-              <IonCol size="12" sizeSm="6">
-                <h3>Business Document</h3>
-                <h6>
-                  Upload business document like CAC registrations, improving
-                  your verification process. This cannot be viewed by other
-                  users
-                </h6>
-                <SingleFile
-                  fileInputRef={
-                    businessDocumentfileInputRef as RefObject<HTMLInputElement>
-                  }
-                  selectedSingleFile={selectedBusinessDocumentFile}
-                  setSelectedSingleFile={setSelectedBusinessDocumentFile}
-                  acceptedFileType="image"
-                />
-              </IonCol>
-              <IonCol size="12" sizeSm="6">
-                <h3>Service Profile Image</h3>
-                <h6>
-                  Upload nice image that helps portray your service profile to
-                  other users, this can be viewed by other users on your profile
-                </h6>
-                <SingleFile
-                  fileInputRef={
-                    mediaFileInputRef as RefObject<HTMLInputElement>
-                  }
-                  selectedSingleFile={selectedMediaFile}
-                  setSelectedSingleFile={setSelectedMediaFile}
-                  acceptedFileType="image"
-                />
-              </IonCol>
-            </IonRow>
-          )}
+          <IonRow>
+            <IonCol size="12">
+              <IonButton
+              expand="full"
+              onClick={() => saveAidServiceProfile()}
+              >
+                Save
+              </IonButton>
+            </IonCol>
+          </IonRow>
+
+         
         </IonGrid>
       </div>
 
-      <IonGrid>
-        <IonRow>
-          <IonCol size="12">
-            <IonItem>
-              {[arrowBackSharp, arrowForwardSharp, saveSharp].map(
-                (icon, index) => (
-                  <IonButton
-                    key={index}
-                    fill="clear"
-                    slot={icon === saveSharp ? "end" : "start"}
-                    onClick={() => {
-                      if (icon === arrowBackSharp && pageNumber > 1)
-                        setPageNumber(pageNumber - 1);
-                      if (icon === arrowForwardSharp && pageNumber < 3)
-                        setPageNumber(pageNumber + 1);
-                      if (icon === saveSharp) saveAidServiceProfile();
-                    }}
-                  >
-                    <IonIcon icon={icon} size="large"></IonIcon>
-                    <span>{icon === saveSharp ? "save" : ""}</span>
-                  </IonButton>
-                )
-              )}
-            </IonItem>
-          </IonCol>
-        </IonRow>
-      </IonGrid>
     </div>
   );
 };

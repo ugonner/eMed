@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { LocationAddressCard } from "../../aid-service/components/LocationAddress";
+import { LocationAddressCard } from "./LocationAddress";
 import { ILocationAddress } from "../../aid-service/dtos/aid-service-profile.dto";
 import { getLocalUser } from "../../utils";
 import { IBooking } from "../interfaces/booking";

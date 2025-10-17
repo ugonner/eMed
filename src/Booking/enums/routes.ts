@@ -2,5 +2,6 @@ export enum BookingRoutes {
     BOOK_SERVICE = "/booking/book",
     HOME = "/booking",
     INVOICE = "/booking/invoice",
-    VIEW_BOOKING = "/booking/booking"
+    VIEW_BOOKING = "/booking/booking",
+    TRACK_LOCATION = "/booking/track-locatioin"
 }

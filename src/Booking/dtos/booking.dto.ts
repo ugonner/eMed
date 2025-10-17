@@ -9,17 +9,10 @@ export interface BookingDTO {
     
     locationAddress: ILocationAddress;
 
-    virtualLocationAddress: VirtualLocationAddressDTO;
-    
+    aidServiceId: number;
+        
     startDate: string;
     
-    duration: number;
-    
-isVirtualLocation: boolean;
-    
-    aidServiceId: number;
-    
-    aidServiceProfileId?: number;
     
 }
 

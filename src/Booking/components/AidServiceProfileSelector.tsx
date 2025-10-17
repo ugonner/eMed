@@ -122,7 +122,7 @@ export const AidServiceProfileSelector = ({
                           <span
                             role="button"
                             className="ion-margin"
-                            aria-label={`select ${aProfile.name}`}
+                            aria-label={`select ${aProfile?.profile?.firstName}`}
                             onClick={async () => {
                               try {
                                 setIsLoading(true);

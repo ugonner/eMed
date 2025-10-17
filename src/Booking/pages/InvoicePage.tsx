@@ -10,10 +10,6 @@ import {
   PaymentMethod,
   PaymentPurpose,
 } from "../../payment/enums/payment.enum";
-import { PaymentDTO } from "../../payment/dtos/payment.dto";
-import { IApiResponse } from "../../shared/interfaces/api-response";
-import { PaystackInitiatePaymentResponseDto } from "../../payment/dtos/paystack.dto";
-import { Browser } from "@capacitor/browser";
 import { usePayment } from "../../payment/hooks/payment";
 
 export const InvoicePage = () => {

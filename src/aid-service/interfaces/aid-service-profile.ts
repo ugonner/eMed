@@ -1,54 +1,29 @@
-import { AidServiceProfileVerificationStatus } from "../../shared/enums/aid-service";
-import { IAidService } from "./aid-service.interface";
+import { IBooking } from "../../Booking/interfaces/booking";
 import { IProfile } from "../../user/interfaces/user";
-import { ILocationAddress, ISocialMediaLinks } from "../dtos/aid-service-profile.dto";
+import { ILocationAddress } from "../dtos/aid-service-profile.dto";
 
 export interface IAidServiceProfile {
-    id: number;
+  id?: number;
 
-    name?: string;
-  
-    verificationStatus: AidServiceProfileVerificationStatus;
+  employeeId: string;
 
-  description?: string;
+  noOfServicesCompleted: number;
 
-  
-  audioCallEarnings?: number;
-    
-  videoCallEarnings?: number;
-  
-  onSiteEarnings?: number;
-  
-  totalEarningsBalance?: number;
-
-  noOfAudioCallServices?: number;
-  noOfVideoCallServices?: number;
-  noOfOnSiteServices?: number;
-  totalServicesRendered?: number;
-
-  businessDocumentUrl?: string;
-  
-  mediaFile?: string;
-  
   contactPhoneNumber?: string;
-  
-  socialMediaLinks: ISocialMediaLinks;
-  
-  locationAddress: ILocationAddress;
-  
-  verificationComment: string;
-  
-  verifiedBy: IProfile;
 
+  locationAddress: ILocationAddress;
+
+  verificationComment: string;
+
+  averageRating: number;
+
+  noOfRatings: number;
 
   profile: IProfile;
 
-  aidService: IAidService;
+  bookings: IBooking[];
 
+  createdAt?: Date;
 
-  createdAt: Date;
-
-  updatedAt: Date;
-  
-  isDeleted: boolean;
+  isDeleted?: boolean;
 }

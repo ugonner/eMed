@@ -33,7 +33,7 @@ import { AidServiceProfileVerificationStatus } from "../../shared/enums/aid-serv
 import { AidServiceProfileDTO } from "../dtos/aid-service-profile.dto";
 import { ProfileApplicationManager } from "../components/ProfileApplicationManager";
 import { ProfileActionsMenu } from "../components/ProfileActionMenu";
-import { LocationAddressCard } from "../components/LocationAddress";
+import { LocationAddressCard } from "../../Booking/components/LocationAddress";
 import { SocialMediaLinksCard } from "../components/SocialMediaLinks";
 import { ServiceBookings } from "../../Booking/components/ServiceBookings";
 import { ServiceCallRooms } from "../../call/components/ServiceCalls";
@@ -110,15 +110,10 @@ export const AidServiceProfilePage = () => {
                   locationAddress={aidServiceProfile.locationAddress}
                 />
               </IonCol>
-              <IonCol size="12" sizeSm="6">
-                <SocialMediaLinksCard
-                  socialMediaLinks={aidServiceProfile.socialMediaLinks}
-                />
-              </IonCol>
               <IonCol size="12">
                 <div>
                   <h4>About:</h4>
-                  <p>{aidServiceProfile.description}</p>
+                  <p>{aidServiceProfile.profile?.firstName}</p>
                 </div>
               </IonCol>
             </IonRow>

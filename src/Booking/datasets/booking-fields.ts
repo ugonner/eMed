@@ -41,11 +41,6 @@ export const getBookingFields = (
       icon: calendarSharp,
     },
     {
-      name: "duration",
-      value: (Object.keys(ServiceDurations).find((duration) => (ServiceDurations as any)[duration] == booking.duration ))?.replace(/(\d+)/, "$1 "),
-      icon: timeSharp,
-    },
-    {
       name: "createdAt",
       value: booking.createdAt?.split("T")[0],
     },

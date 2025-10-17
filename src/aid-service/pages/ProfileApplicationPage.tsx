@@ -4,11 +4,11 @@ import { ProfileApplicationManager } from "../components/ProfileApplicationManag
 
 export const ProfileApplicationPage = () => {
     const queryParams = new URLSearchParams(useLocation().search);
-    const aidServiceId = Number(queryParams.get("aidServiceId")) || 0;
+    const userId = (queryParams.get("ui"));
 
     return (
         <IonContent>
-            <ProfileApplicationManager aidServiceIdNumber={aidServiceId} />
+            <ProfileApplicationManager userId={userId as string} />
         </IonContent>
     )
 }

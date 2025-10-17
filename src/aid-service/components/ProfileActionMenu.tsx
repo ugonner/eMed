@@ -26,8 +26,7 @@ export const ProfileActionsMenu = ({aidServiceProfile}: IAidServiceProfileAction
 
 
     const takeAction = (action: AidServiceProfileActions) => {
-        if(action === AidServiceProfileActions.BOOK) router.push(`${BookingRoutes.BOOK_SERVICE}?aspi=${aidServiceProfile.id}&asi=${aidServiceProfile?.aidService?.id}`);
-        else if(action === AidServiceProfileActions.MANAGE) setOpenEditAidServiceProfileOverlay(true);
+        if(action === AidServiceProfileActions.MANAGE) setOpenEditAidServiceProfileOverlay(true);
         else if(action === AidServiceProfileActions.DELETE) {
             postData(`${APIBaseURL}/aid-service`, {
                 method: "delete",
@@ -46,7 +45,7 @@ export const ProfileActionsMenu = ({aidServiceProfile}: IAidServiceProfileAction
             actionsRef.current = [AidServiceProfileActions.MANAGE, AidServiceProfileActions.DELETE];
         }
         else if(user?.userId !== aidServiceProfile.profile?.userId) {
-            actionsRef.current = [AidServiceProfileActions.BOOK, AidServiceProfileActions.REVIEW]
+            actionsRef.current = [AidServiceProfileActions.REVIEW]
         }
     }, [aidServiceProfile]);
 
@@ -88,7 +87,7 @@ export const ProfileActionsMenu = ({aidServiceProfile}: IAidServiceProfileAction
             >
                 <IonContent>
                     
-                <ProfileApplicationManager aidServiceProfile={aidServiceProfile} onCompletion={() => setOpenEditAidServiceProfileOverlay(false)} />
+                <ProfileApplicationManager aidServiceProfile={aidServiceProfile} userId={aidServiceProfile?.profile?.userId as string} onCompletion={() => setOpenEditAidServiceProfileOverlay(false)} />
                 </IonContent>
             </IonModal>
 

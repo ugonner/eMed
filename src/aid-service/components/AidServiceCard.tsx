@@ -25,9 +25,9 @@ export const AidServiceCard = ({ aidService, showMenu }: IAidServiceCardProps) =
         <IonLabel>
           <h1>{aidService.name}</h1>
           <p> {aidService?.description?.substring(0, 150)} </p>
-          <p> Service Providers: {aidService?.noOfAidServiceProfiles || 0 } </p>
+         
           <p>
-            {["audioCallRate", "videoCallRate", "onSiteRate"].map((field) => (
+            {["serviceRate"].map((field) => (
               <span key={field}>
                 {formatCamelCaseToSentence(field)}{" "}
                 <span className="ion-margin" style={{ fontWeight: "bold" }}>

@@ -21,6 +21,7 @@ import { CreateReport } from "../../report/components/CreateReport";
 import { ServiceType } from "../../review/enums/service";
 import { ManageUserClusters } from "./cluster/ManageUserClusters";
 import { UserMenuActions } from "../enums/user.enum";
+import { AidServiceRoutes } from "../../aid-service/enums/routes";
 
 export interface IUserMenuProps {
   user: IProfile;
@@ -30,6 +31,7 @@ export interface IUserMenuProps {
 export const UserMenu = ({ user, onCompletion }: IUserMenuProps) => {
   const { setLoading, handleAsyncError } = useAsyncHelpersContext();
   const { isAdmin } = useAuthGuardContextStore();
+  const router = useIonRouter();
   
   const actionsRef = useRef<UserMenuActions[]>([]);
   const currentActionRef = useRef<UserMenuActions>();
@@ -44,7 +46,9 @@ export const UserMenu = ({ user, onCompletion }: IUserMenuProps) => {
     try {
       setLoading({ isLoading: true, loadingMessage: `${action}` });
 
-      if (action === UserMenuActions.DELETE_ACCOUNT) {
+      if (action === UserMenuActions.MAKE_PROVIDER) {
+        router.push(`${AidServiceRoutes.APPLY}?ui=${user.userId}`)
+      }else if (action === UserMenuActions.DELETE_ACCOUNT) {
         await postData(`${APIBaseURL}/auth`, { method: "delete" });
       } else if (action === UserMenuActions.BLOCK_USER) {
         await postData(`${APIBaseURL}/auth/${user?.userId}/block`, {
@@ -74,6 +78,7 @@ export const UserMenu = ({ user, onCompletion }: IUserMenuProps) => {
       ];
     } else if (isAdmin) {
       actionsRef.current.push(UserMenuActions.MANAGE_ROLE);
+      actionsRef.current.push(UserMenuActions.MAKE_PROVIDER);
     }
   }, [user]);
 

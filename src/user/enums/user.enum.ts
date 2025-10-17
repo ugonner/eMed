@@ -14,6 +14,7 @@ export enum UserMenuActions {
   UPDATE_PROFILE = "Update Profile",
   REPORT = "Report",
   BLOCK_USER = "Block User",
-  DELETE_ACCOUNT = "Delete Account"  
+  DELETE_ACCOUNT = "Delete Account",
+  MAKE_PROVIDER = "Make Provider Personnel"
 }
 

@@ -1,3 +1,4 @@
+import { IBooking } from "../../Booking/interfaces/booking";
 import { AidServiceProfileVerificationStatus } from "../../shared/enums/aid-service";
 import { ICluster } from "../../user/interfaces/cluster";
 import { IAuthUserProfile } from "../../user/interfaces/user";
@@ -14,17 +15,25 @@ export interface IAidServiceCluster {
 }
 
 export interface IAidService {
-    id: number;
-    name: string;
-    description?: string;
-    avatar?: string;
-    noOfAidServiceProfiles?: number;
-    audioCallRate?: number;
-    videoCallRate?: number;
-    onSiteRate?: number;
-    aidServiceProfiles?: IAuthUserProfile[];
-    aidServiceTags: IAidServiceTag[];
-    aidServiceClusters: IAidServiceCluster[];
+  id: number;
+
+  name: string;
+
+  description?: string;
+
+  avatar?: string;
+
+  serviceRate?: number;
+
+  noOfBookings: number;
+  
+  bookings?: IBooking[];
+  
+  isDeleted?: boolean;
+  
+  aidServiceTags: IAidServiceTag[];
+  
+  aidServiceClusters: IAidServiceCluster[];
 }
 
 

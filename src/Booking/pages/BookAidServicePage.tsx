@@ -2,20 +2,20 @@ import { useLocation } from "react-router"
 import { useAsyncHelpersContext } from "../../shared/contexts/async-helpers";
 import { useEffect, useState } from "react";
 import { IAidService } from "../../aid-service/interfaces/aid-service.interface";
-import { IAidServiceProfile } from "../../aid-service/interfaces/aid-service-profile";
 import { APIBaseURL, getData } from "../../shared/api/base";
 import { IonCol, IonContent, IonGrid, IonHeader, IonPage, IonRow, IonTitle, IonToolbar } from "@ionic/react";
 import { BookService } from "../components/BookService";
+import { IBooking } from "../interfaces/booking";
 
 export const BookAidServicePage = () => {
     const {setLoading, handleAsyncError} = useAsyncHelpersContext();
 
     const queryParams = new URLSearchParams(useLocation().search);
     const aidServiceId = queryParams.get("asi");
-    const aidServiceProfileId = queryParams.get("aspi");
+    const bookingId = queryParams.get("bi");
     
     const [aidService, setAidService] = useState<IAidService>({} as IAidService);
-    const [aidServiceProfile, setAidServiceProfile] = useState<IAidServiceProfile>();
+    const [booking, setBooking] = useState<IBooking>();
 
     const getAidService = async () => {
         try{
@@ -30,12 +30,12 @@ export const BookAidServicePage = () => {
         }
     }
 
-    const getAidServiceProfile = async () => {
+    const getBooking = async () => {
         try{
             
-            setLoading({isLoading: true, loadingMessage: "Fetching service provider"});
-            const res = await getData<IAidServiceProfile>(`${APIBaseURL}/aid-service/profile/${aidServiceProfileId}`);
-            setAidServiceProfile(res);
+            setLoading({isLoading: true, loadingMessage: "Fetching booking detail"});
+            const res = await getData<IBooking>(`${APIBaseURL}/booking/${bookingId}`);
+            setBooking(res);
             setLoading({isLoading: false, loadingMessage: ""})
         }catch(error){
             handleAsyncError(error, "Error getting aid sservice provider");
@@ -44,13 +44,13 @@ export const BookAidServicePage = () => {
 
     useEffect(() => {
         getAidService();
-        if(aidServiceProfileId) getAidServiceProfile();
+        if(bookingId) getBooking();
     }, [])
     return (
         <>
         <IonContent>
             <h3>Book Service</h3>
-            <BookService aidService={aidService} aidServiceProfile={aidServiceProfile} />
+            <BookService aidService={aidService} booking={booking} />
         </IonContent>
                     
         

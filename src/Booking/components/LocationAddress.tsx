@@ -1,13 +1,13 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import {
   ILocationAddress,
-  ISocialMediaLinks,
-} from "../dtos/aid-service-profile.dto";
+} from "../../aid-service/dtos/aid-service-profile.dto";
 import {
   addCircleSharp,
   closeCircle,
   cloudSharp,
   compassSharp,
+  reloadSharp,
 } from "ionicons/icons";
 import {
   IonAvatar,
@@ -22,6 +22,10 @@ import {
   IonModal,
   IonRow,
 } from "@ionic/react";
+import { useAsyncHelpersContext } from "../../shared/contexts/async-helpers";
+import { IOpenStreetReverseGeoCode } from "../../aid-service/interfaces/location-geocode";
+import { useGeoLocationStore } from "../hooks/location";
+import { ILocationCord } from "./LocationVisualizer";
 
 export interface ILocationAddressProps {
   locationAddress: ILocationAddress;
@@ -29,7 +33,7 @@ export interface ILocationAddressProps {
   onCompletion?: () => void;
 }
 export interface ILinkInput {
-  inputName: "street" | "city" | "state" | "country" | "landmark";
+  inputName: "street" | "city" | "locality" | "state" | "country" | "landmark";
   label: string;
   icon?: string;
 }
@@ -39,10 +43,15 @@ export const LocationAddressManager = ({
   setLocationAddress,
   onCompletion,
 }: ILocationAddressProps) => {
+ const {getGeoCodeReverse, getLocationCords} = useGeoLocationStore();
+  
   const [openLocationAddressOverlay, setOpenLocationAddressOverlay] =
     useState(false);
   const [addressData, setAddressData] =
     useState<ILocationAddress>(locationAddress);
+  const [reloadLocation, setReloadLocation] = useState(false);
+  const locationCordsRef = useRef<ILocationCord & {accuracy: number}>();
+  
 
   const locationInputs: ILinkInput[] = [
     {
@@ -53,6 +62,11 @@ export const LocationAddressManager = ({
     {
       inputName: "city",
       label: "Enter city name",
+    },
+    {
+      label: "locality",
+      inputName: "locality",
+      icon: compassSharp
     },
     {
       inputName: "state",
@@ -67,6 +81,20 @@ export const LocationAddressManager = ({
       label: "Enter nearest landmark",
     },
   ];
+
+  useEffect(() => {
+    getLocationCords()
+    .then((coords) => {
+      getGeoCodeReverse(coords as ILocationCord)
+      .then((locationResult) => {
+        if(locationResult) {
+          setLocationAddress(locationResult);
+          setAddressData(locationResult);
+        }
+      })
+    })
+  }, [reloadLocation])
+
   return (
     <div>
       <IonGrid>
@@ -92,6 +120,14 @@ export const LocationAddressManager = ({
       >
         <IonContent>
           <IonItem>
+           <span
+           role="button"
+           aria-label="reload location"
+           onClick={() => setReloadLocation(!reloadLocation)}
+           >
+            <IonIcon icon={reloadSharp}></IonIcon>
+            <span className="ion-margin-horizontal">Accuracy: {locationCordsRef.current?.accuracy}</span>
+           </span>
             <IonButton
               fill="clear"
               slot="end"

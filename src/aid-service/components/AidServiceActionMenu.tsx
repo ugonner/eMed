@@ -5,9 +5,6 @@ import { useAuthGuardContextStore } from "../../auth/contexts/AuthGuardContext";
 import { IonIcon, IonModal, IonPopover, useIonRouter } from "@ionic/react";
 import { ellipsisVerticalSharp } from "ionicons/icons";
 import { AidServiceManager } from "./AidServiceManager";
-import { AidServiceDTO } from "../dtos/aid-service.dto";
-import { getLocalUser } from "../../utils";
-import { AidServiceProfileActions } from "../enums/aid-service-profile";
 import { BookingRoutes } from "../../Booking/enums/routes";
 import { AidServiceRoutes } from "../enums/routes";
 import { APIBaseURL, postData } from "../../shared/api/base";
@@ -28,7 +25,6 @@ export const AidServiceActionMenu = ({aidService}: IAidServiceActionMenuProps) =
 
     const takeAction = (action: AidServiceActions) => {
         if(action === AidServiceActions.BOOK) router.push(BookingRoutes.BOOK_SERVICE);
-        else if(action === AidServiceActions.APPLY) router.push(`${AidServiceRoutes.APPLY}?asi=${aidService.id}`);
         else if(action === AidServiceActions.CREATE) router.push(AidServiceRoutes.AID_SERVICE_CREATE);
         else if(action === AidServiceActions.MANAGE) setOpenEditAidServiceOverlay(true);
         else if(action === AidServiceActions.DELETE) {
@@ -43,7 +39,7 @@ export const AidServiceActionMenu = ({aidService}: IAidServiceActionMenuProps) =
 
     useEffect(() => {
         if(isAdmin) actionsRef.current = Object.values(AidServiceActionMenu);
-        else actionsRef.current = [AidServiceActions.BOOK, AidServiceActions.APPLY];
+        
     }, []);
 
 

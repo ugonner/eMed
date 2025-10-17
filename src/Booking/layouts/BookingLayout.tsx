@@ -7,6 +7,7 @@ import { InvoicePage } from "../pages/InvoicePage";
 import { BookingPage } from "../pages/BookingPage";
 import { BaseHeader } from "../../shared/components/partials/BaseHeader";
 import { AuthGuard } from "../../auth/guards/AuthGuard";
+import { LocationTrackerPage } from "../pages/LocationTrackerPage";
 
 export const BookingLayout = () => {
     return (
@@ -19,6 +20,7 @@ export const BookingLayout = () => {
                 <Route path={BookingRoutes.BOOK_SERVICE} component={BookAidServicePage} />
                 <Route path={BookingRoutes.INVOICE} component={InvoicePage} />
                 <Route path={BookingRoutes.VIEW_BOOKING} component={BookingPage} />
+                <Route path={BookingRoutes.TRACK_LOCATION} component={LocationTrackerPage} />
             </IonRouterOutlet>
             </IonContent>
             

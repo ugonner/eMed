@@ -9,15 +9,12 @@ export enum PaymentStatus {
     PAID = "Paid",
     UNPAID = "UnPaid"
 }
-
 export interface IBooking {
-   id: number;
+id: number;
 
   compositeBookingId: string;
 
   bookingStatus: BookingStatus;
-
-  
 
   bookingStatusNote?: string;
 
@@ -27,43 +24,32 @@ export interface IBooking {
 
   bookingNote: string;
 
-  locationAddress: ILocationAddress
-
-  virtualLocationAddress: VirtualLocationAddressDTO
+  locationAddress: ILocationAddress;
 
   startDate: string;
-  
-  
+
   endDate: string;
+
+  confirmedByProvider: boolean;
+
+  confirmedByUser: boolean;
+
+  rating: number;
+
+  review: string;
+
+  isMatched: boolean;
+
+  aidService: IAidService;
+
+  aidServiceProfile: IAidServiceProfile;
+
+  profile?: IProfile;
+
  
-  duration: number;
-
-isMatched: boolean;
-
-confirmedByProvider: boolean;
-
-confirmedByUser: boolean;
-
-isVirtualLocation: boolean;
-
-rating?: number;
-
-review?: string;
-
-
-
-aidService: IAidService;
-
-aidServiceProfile: IAidServiceProfile;
-
-
-
-profile?: IProfile;
-
   createdAt?: string;
 
-  
-  updatedAt?: Date
 
   isDeleted?: boolean;
+  
 }

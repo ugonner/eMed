@@ -13,12 +13,15 @@ import {
   IonList,
   IonModal,
   IonPopover,
+  useIonRouter,
 } from "@ionic/react";
 import { book, ellipsisVertical } from "ionicons/icons";
 import { APIBaseURL, postData } from "../../shared/api/base";
 import { ReviewAndRate } from "../../review/components/ReviewndRating";
 import { ServiceType } from "../../review/enums/service";
 import { CreateReport } from "../../report/components/CreateReport";
+import { BookingRoutes } from "../enums/routes";
+import { IBookingStatusUpdate, UpdateBookingStatus } from "./UpdateBookingStatus";
 
 export interface IBookingActionsMenuProps {
   booking: IBooking;
@@ -27,15 +30,13 @@ export interface IBookingActionsMenuProps {
 export const BookingActionsMenu = ({ booking }: IBookingActionsMenuProps) => {
   const { setLoading, handleAsyncError } = useAsyncHelpersContext();
   const { isAdmin } = useAuthGuardContextStore();
+  const router = useIonRouter();
 
   const actionsListRef = useRef<BookingMenuActions[]>([]);
 
   const [openMenuOverlay, setOpenMenuOverlay] = useState(false);
   const [openActionOverlay, setOpenActionOverlay] = useState(false);
-  const [updateStatusDto, setUpdateStatusDto] = useState<{
-    bookingStatus: BookingStatus;
-    bookingStatusNote: string;
-  }>({} as any);
+  const [updateStatusDto, setUpdateStatusDto] = useState<IBookingStatusUpdate>({} as IBookingStatusUpdate);
 
   const currentActionRef = useRef<BookingMenuActions>();
 
@@ -47,13 +48,25 @@ export const BookingActionsMenu = ({ booking }: IBookingActionsMenuProps) => {
   const takeAction = async (action: BookingMenuActions) => {
     try {
       setLoading({ isLoading: true, loadingMessage: action });
-      if (action === BookingMenuActions.UPDATE_STATUS) {
+      if(action === BookingMenuActions.TRACK_BOOKING && (!booking.locationAddress?.latitude)) throw new Error("Booking has no tracking location co-ordinates");
+      if(action === BookingMenuActions.TRACK_BOOKING) router.push(`${BookingRoutes.TRACK_LOCATION}?lat=${booking.locationAddress?.latitude}&lon=${booking.locationAddress?.longitude}`);
+      else if (action === BookingMenuActions.EDIT) {
+        router.push(`${BookingRoutes.BOOK_SERVICE}?bi=${booking.id}&asi=${booking.aidService?.id}`);
+      }else if (action === BookingMenuActions.UPDATE_STATUS) {
         await postData(`${APIBaseURL}/booking/${booking.id}/status`, {
           method: "put",
           ...updateStatusDto,
         });
-      } else if (action === BookingMenuActions.CONFIRM) {
-        const confirmedBy = isOwner ? "user" : "provider";
+      } else if (action === BookingMenuActions.CONFIRM_BY_CUSTOMER) {
+        const confirmedBy = "user" 
+        await postData(
+          `${APIBaseURL}/booking/${booking.id}/${confirmedBy}/confirm`,
+          {
+            method: "put",
+          }
+        );
+      } else if (action === BookingMenuActions.CONFIRM_BY_PROVIDER) {
+        const confirmedBy = "provider" 
         await postData(
           `${APIBaseURL}/booking/${booking.id}/${confirmedBy}/confirm`,
           {
@@ -73,13 +86,16 @@ export const BookingActionsMenu = ({ booking }: IBookingActionsMenuProps) => {
 
   useEffect(() => {
     actionsListRef.current = [];
-    if (isOwner || isProvider || isAdmin) {
+    if (isProvider || isAdmin) {
       actionsListRef.current = [
-        BookingMenuActions.CONFIRM,
+        BookingMenuActions.TRACK_BOOKING,
+        BookingMenuActions.CONFIRM_BY_PROVIDER,
       ];
     }
     if (isOwner || isAdmin) {
       actionsListRef.current = [
+        BookingMenuActions.EDIT,
+        BookingMenuActions.CONFIRM_BY_CUSTOMER,
         ...actionsListRef.current,
         BookingMenuActions.RATING_AND_REVIEW,
         BookingMenuActions.REPORT,
@@ -135,11 +151,12 @@ export const BookingActionsMenu = ({ booking }: IBookingActionsMenuProps) => {
       >
         <IonContent>
           <h2 className="ion-text-center">{currentActionRef.current}</h2>
-          {[
-            BookingMenuActions.CONFIRM,
-            BookingMenuActions.MATCH_PROVIDER,
+          {(![
             BookingMenuActions.UPDATE_STATUS,
-          ].includes(currentActionRef.current as BookingMenuActions) && (
+            BookingMenuActions.REPORT,
+            BookingMenuActions.RATING_AND_REVIEW,
+            
+          ].includes(currentActionRef.current as BookingMenuActions)) && (
             <>
             <p className="io-text-center">Confirm and Proceed with this action, Click "confirm" to proceed or "cancel" to ignore</p>
               {["confirm", "cancel"].map((item) => (
@@ -158,6 +175,14 @@ export const BookingActionsMenu = ({ booking }: IBookingActionsMenuProps) => {
                 </IonButton>
               ))}
             </>
+          )}
+
+          {currentActionRef.current ===
+            BookingMenuActions.UPDATE_STATUS && (
+            <UpdateBookingStatus
+            booking={booking}
+            onCompletion={() => setOpenActionOverlay(false)}
+            />
           )}
 
           {currentActionRef.current ===
