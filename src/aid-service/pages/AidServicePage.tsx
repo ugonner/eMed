@@ -21,7 +21,6 @@ import { IAidServiceProfile } from "../interfaces/aid-service-profile";
 import { AidServiceCard } from "../components/AidServiceCard";
 import { useAuthGuardContextStore } from "../../auth/contexts/AuthGuardContext";
 import { ServiceProfiles } from "../components/ServiceProfiles";
-import { ServiceCallRooms } from "../../call/components/ServiceCalls";
 import { ServiceBookings } from "../../Booking/components/ServiceBookings";
 
 export const AidServicePage = () => {
@@ -56,7 +55,6 @@ export const AidServicePage = () => {
     tabs = [
       ...tabs,
       { tabNumber: 2, label: "Bookings" },
-      { tabNumber: 3, label: "Calls" },
     ];
   }
 
@@ -99,9 +97,7 @@ export const AidServicePage = () => {
                     {tabNumber === 2 && (
                       <ServiceBookings queryPayload={{ ...queryObject }} />
                     )}
-                    {tabNumber === 3 && (
-                      <ServiceCallRooms queryPayload={{ ...queryObject }} />
-                    )}
+                    
                   </IonCol>
                 </IonRow>
         </IonGrid>

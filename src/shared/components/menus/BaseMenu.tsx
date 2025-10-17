@@ -23,7 +23,6 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import { UserRoutes } from "../../../user/enums/routes.enum";
-import { CallRoutes } from "../../../call/enums/routes";
 import { HomeRoutes } from "../../../home/enums/routes";
 import { getLocalUser } from "../../../utils";
 import { defaultUserImageUrl } from "../../DATASETS/defaults";
@@ -56,13 +55,7 @@ export const BaseMenu = () => {
       label: "My Transactions",
       routeLink: `${PaymetRoutes.TRANSACTIONS}`,
       icon: briefcase,
-    },
-    {
-      id: 4,
-      label: "Call History",
-      routeLink: `${CallRoutes.CALL_HISTORY}`,
-      icon: callSharp,
-    },
+    }
   ];
   
 

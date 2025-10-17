@@ -26,9 +26,6 @@ import {
   IonText,
   IonToolbar,
 } from "@ionic/react";
-import { UserRoutes } from "../../../user/enums/routes.enum";
-import { CallRoutes } from "../../../call/enums/routes";
-import { HomeRoutes } from "../../../home/enums/routes";
 import { getLocalUser } from "../../../utils";
 import { defaultUserImageUrl } from "../../DATASETS/defaults";
 import { useAuthGuardContextStore } from "../../../auth/contexts/AuthGuardContext";
