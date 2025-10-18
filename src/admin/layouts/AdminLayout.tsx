@@ -4,7 +4,6 @@ import { AdminRoutes } from "../enums/routes";
 import { AidServiceProfileDashboard } from "../../aid-service/components/Dashboard";
 import { UserDashboard } from "../../user/pages/UserDashboard";
 import { BookingDashboard } from "../../Booking/components/BookingDashboard";
-import { CallRoomDashboard } from "../../call/components/CallDashBoard";
 import { ReportDashboard } from "../../report/components/ReportDashboard";
 import { AdminDashboard } from "../pages/Dashboard";
 import { AdminHeader } from "../../shared/components/partials/AdminHeader";
@@ -23,7 +22,6 @@ export const AdminLayout = () => {
         />
         <Route path={AdminRoutes.USER} component={UserDashboard} />
         <Route path={AdminRoutes.BOOKING} component={BookingDashboard} />
-        <Route path={AdminRoutes.CALL} component={CallRoomDashboard} />
         <Route path={AdminRoutes.REPORT} component={ReportDashboard} />
         <Route path={AdminRoutes.TRANSACTION} component={PaymentTransactionDashboard} />
       </IonRouterOutlet>

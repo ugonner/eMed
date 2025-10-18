@@ -1,6 +1,5 @@
 import { IonAvatar, IonButton, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonIcon, IonItem, IonLabel, IonPopover, IonRow, IonText } from "@ionic/react"
 import { UserBannerCard } from "../components/UserBannerCard"
-import ServiceQuickActions from "../components/QuickActions"
 import { ServiceBookings } from "../../Booking/components/ServiceBookings"
 import { getLocalUser } from "../../utils"
 import { useRef, useState } from "react"
@@ -9,6 +8,7 @@ import { useIInitContextStore } from "../../shared/contexts/InitContextProvider"
 import { useAsyncHelpersContext } from "../../shared/contexts/async-helpers"
 import { IProfile } from "../../user/interfaces/user"
 import { chatboxSharp, logoWhatsapp } from "ionicons/icons"
+import { QuickActions } from "../components/QuickActions"
 
 export const callCenterPhoneNumber = "2347034667861";
 export const HomePage = () => {
@@ -30,7 +30,7 @@ export const HomePage = () => {
         <IonContent>
             <IonGrid>
                 <UserBannerCard user={user as IProfile} />
-                <ServiceQuickActions />
+                <QuickActions />
                 <IonRow>
                     <IonCol size="12">
                         <h2>My Bookings</h2>
