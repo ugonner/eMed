@@ -1,9 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
+import { ILocationAddress } from "../../aid-service/dtos/aid-service-profile.dto";
 import {
-  ILocationAddress,
-} from "../../aid-service/dtos/aid-service-profile.dto";
-import {
-  addCircleSharp,
   closeCircle,
   cloudSharp,
   compassSharp,
@@ -20,7 +17,9 @@ import {
   IonItem,
   IonLabel,
   IonModal,
+  IonPopover,
   IonRow,
+  IonSpinner,
 } from "@ionic/react";
 import { useAsyncHelpersContext } from "../../shared/contexts/async-helpers";
 import { IOpenStreetReverseGeoCode } from "../../aid-service/interfaces/location-geocode";
@@ -43,15 +42,22 @@ export const LocationAddressManager = ({
   setLocationAddress,
   onCompletion,
 }: ILocationAddressProps) => {
- const {getGeoCodeReverse, getLocationCords} = useGeoLocationStore();
-  
+  const { setLoading, handleAsyncError } = useAsyncHelpersContext();
+  const { getGeoCodeReverse, getLocationCords } = useGeoLocationStore();
+
   const [openLocationAddressOverlay, setOpenLocationAddressOverlay] =
     useState(false);
   const [addressData, setAddressData] =
     useState<ILocationAddress>(locationAddress);
   const [reloadLocation, setReloadLocation] = useState(false);
-  const locationCordsRef = useRef<ILocationCord & {accuracy: number}>();
-  
+  const [openLocationAccuracyOverlay, setOpenLocationAccuracyOverlay] =
+    useState(false);
+
+  const [locationCordData, setLoctionCordsData] = useState<
+    ILocationCord & { accuracy: number }
+  >();
+  const locationStartTimeRef = useRef<number>(0);
+  const stopAutoLocationRef = useRef<boolean>(false);
 
   const locationInputs: ILinkInput[] = [
     {
@@ -66,7 +72,7 @@ export const LocationAddressManager = ({
     {
       label: "locality",
       inputName: "locality",
-      icon: compassSharp
+      icon: compassSharp,
     },
     {
       inputName: "state",
@@ -82,36 +88,68 @@ export const LocationAddressManager = ({
     },
   ];
 
+  const resetLocationStartData = () => {
+    stopAutoLocationRef.current = true;
+    locationStartTimeRef.current = 0;
+    setOpenLocationAccuracyOverlay(false);
+  };
+
+  const retrieveLocationAddress = async (dto: ILocationCord) => {
+    resetLocationStartData();
+    try {
+      const locationRes = await getGeoCodeReverse(dto);
+      if (!locationRes) throw new Error("Address info not retrieved");
+      setLocationAddress(locationRes);
+      setAddressData(locationRes);
+    } catch (error) {
+      console.log(
+        (error as Error).message,
+        "Error retriving address from coords"
+      );
+    }
+  };
+
   useEffect(() => {
-    getLocationCords()
-    .then((coords) => {
-      getGeoCodeReverse(coords as ILocationCord)
-      .then((locationResult) => {
-        if(locationResult) {
-          setLocationAddress(locationResult);
-          setAddressData(locationResult);
+    const autoGetLocationCords = async () => {
+      try {
+        if (!openLocationAddressOverlay) setOpenLocationAccuracyOverlay(true);
+        const cordsRes = await getLocationCords();
+        if (!cordsRes) throw new Error("Error getting geo position coords");
+        setLoctionCordsData(cordsRes);
+        if (locationStartTimeRef.current === 0)
+          locationStartTimeRef.current = Date.now();
+        if (
+          cordsRes.accuracy > 10 &&
+          !stopAutoLocationRef.current &&
+          Date.now() - locationStartTimeRef.current < 2 * 60 * 1000
+        ) {
+          return await autoGetLocationCords();
         }
-      })
-    })
-  }, [reloadLocation])
+        if (cordsRes.accuracy <= 10) await retrieveLocationAddress(cordsRes);
+      } catch (error) {
+        resetLocationStartData();
+      }
+    };
+    autoGetLocationCords();
+  }, [reloadLocation]);
 
   return (
     <div>
       <IonGrid>
         <IonRow>
-          <IonCol 
-          size="12"
-           role="button"
-           aria-label="oen location inputs"
-                onClick={() =>
-                  setOpenLocationAddressOverlay(!openLocationAddressOverlay)
-                }
+          <IonCol
+            size="12"
+            role="button"
+            aria-label="oen location inputs"
+            onClick={() =>
+              setOpenLocationAddressOverlay(!openLocationAddressOverlay)
+            }
           >
             <LocationAddressCard
               locationAddress={addressData || ({} as ILocationAddress)}
+              editable={true}
             />
           </IonCol>
-         
         </IonRow>
       </IonGrid>
       <IonModal
@@ -120,14 +158,20 @@ export const LocationAddressManager = ({
       >
         <IonContent>
           <IonItem>
-           <span
-           role="button"
-           aria-label="reload location"
-           onClick={() => setReloadLocation(!reloadLocation)}
-           >
-            <IonIcon icon={reloadSharp}></IonIcon>
-            <span className="ion-margin-horizontal">Accuracy: {locationCordsRef.current?.accuracy}</span>
-           </span>
+            <span
+              className="ion-padding"
+              role="button"
+              aria-label="reload location"
+              onClick={() => {
+                stopAutoLocationRef.current = false;
+                setReloadLocation(!reloadLocation);
+              }}
+            >
+              <IonIcon icon={reloadSharp}></IonIcon>
+              <span className="ion-margin-horizontal">
+                Accuracy: {locationCordData?.accuracy}
+              </span>
+            </span>
             <IonButton
               fill="clear"
               slot="end"
@@ -170,14 +214,46 @@ export const LocationAddressManager = ({
           </div>
         </IonContent>
       </IonModal>
+
+      <IonPopover
+        isOpen={openLocationAccuracyOverlay}
+        onDidDismiss={() => setOpenLocationAccuracyOverlay(false)}
+      >
+        <div className="ion-text-center">
+          <h3>Automatic Location Accuracy</h3>
+
+          <p>
+            <span style={{ fontSize: "2em" }}>
+              {!locationCordData?.accuracy && (
+                <IonSpinner className="ion-margin-horizontal" />
+              )}
+              {locationCordData?.accuracy}m
+            </span>
+          </p>
+          <p>
+            For better results your location accuracy should be less than 50
+            meters.
+            <br /> You can move around or outdoors for better reception.
+          </p>
+          <IonButton
+            onClick={() => {
+              if (locationCordData) retrieveLocationAddress(locationCordData);
+            }}
+          >
+            Don't Wait, Continue with this accuracy
+          </IonButton>
+        </div>
+      </IonPopover>
     </div>
   );
 };
 
 export const LocationAddressCard = ({
   locationAddress,
+  editable,
 }: {
   locationAddress: ILocationAddress;
+  editable?: boolean;
 }) => {
   return (
     <IonItem>
@@ -185,7 +261,10 @@ export const LocationAddressCard = ({
         <IonIcon icon={compassSharp} size="large"></IonIcon>
       </IonAvatar>
       <IonLabel>
-        <h2>Location Address</h2>
+        <h2>
+          Location Address
+          {editable && <small className="ion-margin-horizontal">Tap To Edit</small>}
+        </h2>
         {Object.keys(locationAddress || {}).map((item, index) => (
           <p key={index}>
             <span>{item}</span>:{" "}

@@ -7,7 +7,6 @@ import { getLocalUser } from "../../utils";
 
 import { ServiceProfiles } from "../../aid-service/components/ServiceProfiles";
 import { ServiceBookings } from "../../Booking/components/ServiceBookings";
-import { ServiceCallRooms } from "../../call/components/ServiceCalls";
 import { UserProfileWalletCard } from "./wallet/UserWalletCard";
 import { IProfileWallet } from "../interfaces/user-wallet";
 
@@ -30,14 +29,10 @@ export const UserProfile = ({
 
   const [tabNumber, setTabNumber] = useState(1);
 
-  let tabs: { tabNumber: number; label: string }[] = [
-    { tabNumber: 1, label: "Service Profiles" },
-  ];
+  let tabs: { tabNumber: number; label: string }[] = [];
   if (isOwner) {
     tabs = [
-      ...tabs,
-      { tabNumber: 2, label: "Bookings" },
-      { tabNumber: 3, label: "Calls" },
+      { tabNumber: 1, label: "Bookings" },
     ];
   }
 
@@ -81,11 +76,7 @@ export const UserProfile = ({
               queryPayload={{ userId: profileRef.current.userId }}
             />
           )}
-          {tabNumber === 3 && (
-            <ServiceCallRooms
-              queryPayload={{ userId: profileRef.current.userId }}
-            />
-          )}
+         
         </IonCol>
       </IonRow>
     </>

@@ -10,7 +10,7 @@ import {
   IonRow,
 } from "@ionic/react";
 import { calendarOutline, calendarSharp, timeOutline, timeSharp } from "ionicons/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./MultiSelector.css";
 
 export interface IDateSelectorProps {
@@ -91,6 +91,9 @@ export const DateSelector = ({
     return getNumberRange(1, dayRangeLength);
   };
 
+  useEffect(() => {
+    if(onSelection) onSelection(initDate);
+  }, [])
   return (
     <div>
       <div

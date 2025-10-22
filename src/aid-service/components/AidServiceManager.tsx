@@ -54,14 +54,9 @@ export const AidServiceManager = ({
       setLoading({ isLoading: true, loadingMessage: "Saving aid service" });
 
       if (!aidServiceDto.name?.trim()) throw new Error("Name is required");
-      if (aidServiceDto.audioCallRate)
-        aidServiceDto.audioCallRate = Number(aidServiceDto.audioCallRate);
-      if (aidServiceDto.videoCallRate)
-        aidServiceDto.videoCallRate = Number(aidServiceDto.videoCallRate);
-      if (aidServiceDto.onSiteRate)
-        aidServiceDto.onSiteRate = Number(aidServiceDto.onSiteRate);
-
+       
       const dto: Partial<AidServiceDTO> = {};
+      if(aidServiceDto.serviceRate) aidServiceDto.serviceRate = Number(aidServiceDto.serviceRate);
       if(aidServiceTags.length > 0) dto.tags = aidServiceTags;
       if(aidServiceClusters.length > 0) dto.clusterIds = aidServiceClusters.map((cluster) => cluster.id as number)
 
@@ -72,6 +67,7 @@ export const AidServiceManager = ({
       await postData(`${APIBaseURL}/aid-service`, {
         method: aidService?.id ? "put" : "post",
         ...aidServiceDto,
+        ...dto
       });
       setLoading({ isLoading: false, loadingMessage: "" });
       setReLoadEntities((prev) => (!prev))
@@ -84,10 +80,8 @@ export const AidServiceManager = ({
   const inputFields: (
     | "name"
     | "description"
-    | "audioCallRate"
-    | "videoCallRate"
-    | "onSiteRate"
-  )[] = ["name", "description", "audioCallRate", "videoCallRate", "onSiteRate"];
+    | "serviceRate"
+  )[] = ["name", "description", "serviceRate"];
 
   return (
     <div>

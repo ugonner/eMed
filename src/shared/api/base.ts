@@ -4,7 +4,7 @@ export const serverPort = 4000;
 export const appPort = 8100;
 
 const hostname = window.location.hostname;
-const baseIp = /(\d\d\d\.)+/i.test(hostname) ?  `https://${hostname}:${serverPort}` : `https://aid-servicing-api.onrender.com`;
+const baseIp = /(\d\d\d\.)+/i.test(hostname) ?  `https://${hostname}:${serverPort}` : `srv-d3s8regdl3ps73d6mnfg`;
 
 export const socketIOBaseURL = `${baseIp}/call`;
 export const APIBaseURL = `${baseIp}/api`;

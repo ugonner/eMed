@@ -1,5 +1,5 @@
 import { Redirect, Route, useHistory } from "react-router-dom";
-import { IonApp, IonRouterOutlet, setupIonicReact } from "@ionic/react";
+import { IonApp, IonRouterOutlet, IonTabs, setupIonicReact } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 
 /* Core CSS required for Ionic components to work properly */
@@ -33,8 +33,6 @@ import "@ionic/react/css/palettes/dark.system.css";
 import "./theme/variables.css";
 import { AsyncHelperProvider } from "./shared/contexts/async-helpers";
 
-import { PlainRTCBaseLayout } from "./call/layouts/PlainRTCBaseLayout";
-import { PlainRTCContextProvider } from "./call/contexts/plainwebrtc";
 import { AuthGuardContextProvider } from "./auth/contexts/AuthGuardContext";
 import { AidServiceRoutes } from "./aid-service/enums/routes";
 import { AidServiceLayout } from "./aid-service/layouts/AidServiceLayout";
@@ -47,16 +45,18 @@ import { AdminRoutes } from "./admin/enums/routes";
 import { AdminLayout } from "./admin/layouts/AdminLayout";
 import { AuthRoutes } from "./auth/enums/routes";
 import { AuthenticationsLayout } from "./auth/layouts/AuthenticationsLayout";
-import { HomeRoutes } from "./home/enums/routes";
-import { CallRoutes } from "./call/enums/routes";
 import { BaseMenu } from "./shared/components/menus/BaseMenu";
 import { PaymetRoutes } from "./payment/enums/routes";
 import { PaymentLayout } from "./payment/layouts/PaymentLayout";
 import { AdminMenu } from "./shared/components/menus/AdminMenu";
-import { VerifyPayment } from "./payment/Components/VerifyPayment";
 import { VerifyPaymentCallbackPage } from "./payment/pages/VerifyPaymentCalllbackPage";
 import { BaseLayout } from "./shared/layouts/BaseLayout";
 import { TransactionsPage } from "./payment/pages/TransactionsPage";
+import { HomeRoutes } from "./home/enums/routes";
+import { HomeLayout } from "./home/layouts/HomeLayout";
+import { NavigationBar } from "./shared/components/partials/NavigationBar";
+import { PostRoutes } from "./post/enums/route";
+import { PostLayout } from "./post/layouts/PostLayout";
 
 setupIonicReact();
 const App: React.FC = () => {
@@ -65,32 +65,34 @@ const App: React.FC = () => {
       <AsyncHelperProvider>
         <InitContextProvider>
           <AuthGuardContextProvider>
-            <PlainRTCContextProvider>
               <BaseLayout>
                 
               <BaseMenu />
               <AdminMenu />
               <IonReactRouter>
+                  
                 <IonRouterOutlet>
-                  <Route path={CallRoutes.HOME} component={PlainRTCBaseLayout} />
+                  <Route path={HomeRoutes.HOME} component={HomeLayout} />
                   <Route
                     path={AidServiceRoutes.HOME}
                     component={AidServiceLayout}
                   />
-                  <Route path={BookingRoutes.HOME} component={BookingLayout} />
                   <Route path={UserRoutes.HOME} component={UserLayout} />
                   <Route path={AdminRoutes.HOME} component={AdminLayout} />
                   <Route path={AuthRoutes.HOME} component={AuthenticationsLayout} />
+                  <Route path={BookingRoutes.HOME} component={BookingLayout} />
+                  <Route path={PostRoutes.HOME} component={PostLayout} />
                   
                     <Route exact={false} path={PaymetRoutes.VERIFY_PAYMENT} component={VerifyPaymentCallbackPage} />
                      <Route path={PaymetRoutes.TRANSACTIONS} component={TransactionsPage} />
                             
-                    <Redirect to={CallRoutes.HOME} />
+                    <Redirect to={HomeRoutes.HOME} />
                   
                 </IonRouterOutlet>
+                {/* <NavigationBar /> */}
+                
               </IonReactRouter>
               </BaseLayout>
-            </PlainRTCContextProvider>
           </AuthGuardContextProvider>
         </InitContextProvider>
       </AsyncHelperProvider>

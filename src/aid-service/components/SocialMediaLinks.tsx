@@ -1,8 +1,5 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { ISocialMediaLinks } from "../dtos/aid-service-profile.dto";
 import {
-  addCircleSharp,
-  language,
   linkSharp,
   logoFacebook,
   logoLinkedin,
@@ -21,6 +18,12 @@ import {
   IonModal,
   IonRow,
 } from "@ionic/react";
+
+export interface ISocialMediaLinks {
+  facebook?: string;
+  x?: string;
+  linkedIn?: string;
+}
 
 export interface ISocialMediaLinksProps {
   socialMediaLinks?: ISocialMediaLinks;

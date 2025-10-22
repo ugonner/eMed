@@ -3,6 +3,7 @@ import {
   briefcaseSharp,
   callSharp,
   cart,
+  chatbox,
   folderOpen,
   home,
   logOutSharp,
@@ -26,9 +27,6 @@ import {
   IonText,
   IonToolbar,
 } from "@ionic/react";
-import { UserRoutes } from "../../../user/enums/routes.enum";
-import { CallRoutes } from "../../../call/enums/routes";
-import { HomeRoutes } from "../../../home/enums/routes";
 import { getLocalUser } from "../../../utils";
 import { defaultUserImageUrl } from "../../DATASETS/defaults";
 import { useAuthGuardContextStore } from "../../../auth/contexts/AuthGuardContext";
@@ -64,9 +62,9 @@ export const AdminMenu = () => {
     },
     {
       id: 4,
-      label: "Bookings",
-      routeLink: `${AdminRoutes.CALL}`,
-      icon: callSharp,
+      label: "Reviews / Feedbacks",
+      routeLink: `${AdminRoutes.REVIEWS}`,
+      icon: chatbox,
     },
     {
         id: 5,

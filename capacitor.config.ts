@@ -1,12 +1,12 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: "com.ableaid.app",
-  appName: 'AbleAid',
+  appId: "app.vercel.flexmedcare",
+  appName: 'Flex MedCare',
   webDir: 'dist',
   server: {
     allowNavigation: [
-      "ableaid.vercel.app"
+      "flexmedcare.vercel.app"
     ]
   },
   plugins: {
@@ -14,7 +14,8 @@ const config: CapacitorConfig = {
       launchShowDuration: 5000,
       backgroundColor: "#fffffffff",
       showSpinner: false,
-      androidScaleType: 'CENTER_CROP'
+      androidScaleType: 'CENTER_CROP',
+      
     }
   }
 };

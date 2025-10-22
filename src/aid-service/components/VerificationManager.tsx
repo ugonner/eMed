@@ -24,7 +24,7 @@ export const VerificationManager = ({
     verificationStatus?: AidServiceProfileVerificationStatus;
   }>({
     verificationComment: aidServiceProfile?.verificationComment,
-    verificationStatus: aidServiceProfile?.verificationStatus,
+    verificationStatus: AidServiceProfileVerificationStatus.PENDING,
   });
 
   const [openVerificationOverlay, setOpenVerificationOverlay] = useState(false);
@@ -43,7 +43,7 @@ export const VerificationManager = ({
       setLoading({ isLoading: false, loadingMessage: "" });
       setVerificationDto({
         verificationComment: res.verificationComment,
-        verificationStatus: res.verificationStatus,
+        verificationStatus: (res as any).verificationStatus,
       });
       if (onCompletion) onCompletion(aidServiceProfile);
     } catch (error) {
@@ -66,7 +66,7 @@ export const VerificationManager = ({
           Update verification
         </IonButton>
       ) : (
-        <span>Verification: {aidServiceProfile.verificationStatus}</span>
+        <span>Verification: {(aidServiceProfile as any).verificationStatus}</span>
       )}
       <IonModal
       isOpen={openVerificationOverlay}

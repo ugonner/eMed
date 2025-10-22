@@ -16,11 +16,6 @@ import {
   IonRow,
   useIonRouter,
 } from "@ionic/react";
-import { callSharp, closeCircle, powerSharp } from "ionicons/icons";
-import { useRTCContextStore } from "../../call/contexts/rtc";
-import { CallState } from "../../call/enums/call.enum";
-import { ConsumingVideo } from "../../call/components/video/ConsumingVideo";
-import { CallVideo } from "../../call/components/video/CallVideo";
 import { useHistory } from "react-router";
 
 export const BaseLayout = ({ children }: PropsWithChildren) => {

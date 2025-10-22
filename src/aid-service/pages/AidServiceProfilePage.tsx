@@ -36,7 +36,6 @@ import { ProfileActionsMenu } from "../components/ProfileActionMenu";
 import { LocationAddressCard } from "../../Booking/components/LocationAddress";
 import { SocialMediaLinksCard } from "../components/SocialMediaLinks";
 import { ServiceBookings } from "../../Booking/components/ServiceBookings";
-import { ServiceCallRooms } from "../../call/components/ServiceCalls";
 
 export interface IAidServiceProfilePageProps {}
 
@@ -181,9 +180,7 @@ export const AidServiceProfilePage = () => {
                   {(isOwner && tabNumber === 1) && (
                     <ServiceBookings queryPayload={{ aidServiceProfileId }} />
                   )}
-                  {(isOwner && tabNumber === 2) && (
-                    <ServiceCallRooms queryPayload={{ aidServiceProfileId }} />
-                  )}
+                  
                 </IonCol>
               </IonRow>
       </IonGrid>

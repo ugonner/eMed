@@ -1,154 +1,228 @@
-import { IonAvatar, IonButton, IonCol, IonContent, IonFab, IonFabButton, IonGrid, IonIcon, IonItem, IonLabel, IonPopover, IonRow, IonText } from "@ionic/react"
-import { UserBannerCard } from "../components/UserBannerCard"
-import ServiceQuickActions from "../components/QuickActions"
-import { ServiceBookings } from "../../Booking/components/ServiceBookings"
-import { getLocalUser } from "../../utils"
-import { IPlainRTCConnectedUser, IProfile } from "../../user/interfaces/user"
-import { callSharp, chatboxSharp, logoWhatsapp, refreshCircleOutline } from "ionicons/icons"
-import { IApiResponse } from "../../shared/interfaces/api-response"
-import { usePlainRTCContextStore } from "../../call/contexts/plainwebrtc"
-import { BroadcastEvents } from "../../call/enums/events.enum"
-import { callPurpose, CallType, RoomType } from "../../call/enums/call.enum"
-import { useRef, useState } from "react"
-import { Browser } from "@capacitor/browser"
-import { IAidService } from "../../aid-service/interfaces/aid-service.interface"
-import { useIInitContextStore } from "../../shared/contexts/InitContextProvider"
-import { useAsyncHelpersContext } from "../../shared/contexts/async-helpers"
+import {
+  IonAvatar,
+  IonButton,
+  IonCheckbox,
+  IonCol,
+  IonContent,
+  IonFab,
+  IonFabButton,
+  IonGrid,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonPopover,
+  IonRow,
+  IonText,
+} from "@ionic/react";
+import { UserBannerCard } from "../components/UserBannerCard";
+import { ServiceBookings } from "../../Booking/components/ServiceBookings";
+import {
+  formatCurrency,
+  formatObjectToReadableText,
+  getLocalUser,
+  sendWhatsappMessage,
+  useLocalStorage,
+} from "../../utils";
+import { useEffect, useRef, useState } from "react";
+import { IAidService } from "../../aid-service/interfaces/aid-service.interface";
+import { useIInitContextStore } from "../../shared/contexts/InitContextProvider";
+import { useAsyncHelpersContext } from "../../shared/contexts/async-helpers";
+import { IAuthUserProfile, IProfile } from "../../user/interfaces/user";
+import {
+  arrowForward,
+  chatboxSharp,
+  colorFill,
+  logoWhatsapp,
+  medicalSharp,
+} from "ionicons/icons";
+import { QuickActions } from "../components/QuickActions";
+import { useGeoLocationStore } from "../../Booking/hooks/location";
+import { LocalStorageEnum } from "../../shared/enums";
+import { APIBaseURL, AppBaseUrl, getData } from "../../shared/api/base";
+import { BookingRoutes } from "../../Booking/enums/routes";
+import { IBooking, PaymentStatus } from "../../Booking/interfaces/booking";
+import { IQueryResult } from "../../shared/interfaces/api-response";
+import { BookingStatus } from "../../Booking/enums/booking";
+import { HealthPosts } from "../components/HealthPosts";
+import { Posts } from "../../post/datasets/posts";
+import { IAppSettings } from "../../shared/interfaces/app-settings";
+import { I } from "vitest/dist/reporters-5f784f42";
+import { PostCard } from "../../post/components/PostCard";
+import { IPost } from "../../post/interfaces/post";
+import { PostRoutes } from "../../post/enums/route";
+import { ShortCutButtons } from "../components/ShortCutButtons";
 
 export const callCenterPhoneNumber = "2347034667861";
 export const HomePage = () => {
-  const {aidServicesRef} = useIInitContextStore(); 
-  const {setLoading, handleAsyncError} = useAsyncHelpersContext();
-  const {socketRef, callReceiver} = usePlainRTCContextStore();
-   
-   const [openMessageOverlay, setOpenMessageOverlay] = useState(false);
-   const messageRef = useRef<string>("");
-   const selectedAidServiceRef = useRef<IAidService>();
+  const { getLocationCords } = useGeoLocationStore();
+  const { aidServicesRef } = useIInitContextStore();
+  const { getItem, setItem } = useLocalStorage();
+  const { setLoading, handleAsyncError } = useAsyncHelpersContext();
 
+  const [openMessageOverlay, setOpenMessageOverlay] = useState(false);
+  const [lastRunningBooking, setLastRunningBooking] = useState<IBooking>();
+  const [openHealthTipOverlay, setOpenHealthTipOverlay] = useState(false);
 
-    const user = getLocalUser();
- const getLiveAidServiceProviders = async (
-    aidServiceId?: number
-  ): Promise<IApiResponse<IPlainRTCConnectedUser[]>> => {
-    return await new Promise((resolve) => {
-      setLoading({isLoading: true, loadingMessage: "finding user"})
-      socketRef.current?.emit(
-        BroadcastEvents.GET_AVALABLE_AID_SERVICE_PROVIDERS,
-        { aidServiceId },
-        (res: IApiResponse<IPlainRTCConnectedUser[]>) => {
-          setLoading({isLoading: false, loadingMessage: ""});
-          resolve(res);
-        }
-      );
-    });
-  };
+  const messageRef = useRef<string>("");
+  const latestPostRef = useRef<IPost>();
+  const authUser = getItem<IAuthUserProfile>(LocalStorageEnum.USER);
+  const user = authUser?.profile;
+  const appSettings = getItem<IAppSettings>(LocalStorageEnum.APP_SETTINGS);
+  const lastHealthTip = getItem<string>(
+    LocalStorageEnum.LAST_VIEWED_HEALTH_TIP
+  );
 
-  const callAidServiceProvider = async (
-    aidProfile: IPlainRTCConnectedUser,
-    aidServiceId: number
-  ) => {
-    callReceiver({
-      peerSocketId: aidProfile.socketId as string,
-      roomId: `${socketRef.current?.id}${Date.name}`,
-      roomType: RoomType.PEER_TO_PEER,
-      callType: CallType.VIDEO,
-      callPurpose: callPurpose.AID_SERVICE,
-      aidServiceProfileId: aidProfile.aidServiceProfiles?.find(
-        (aidProfile) => aidProfile.aidService?.id == aidServiceId
-      )?.id,
-    });
-  };
-  const autoCallServiceProvider = async (aidServiceId: number) => {
-    try {
-      const usersRes = await getLiveAidServiceProviders(aidServiceId);
-      if (usersRes.error) throw new Error(usersRes.error as string);
-      if (usersRes.data && usersRes.data.length > 0) {
-        callAidServiceProvider(usersRes.data[0], aidServiceId);
+  useEffect(() => {
+    const getLastBooking = async () => {
+      try {
+        setLoading({ isLoading: true, loadingMessage: "" });
+        const res = await getData<IQueryResult<IBooking>>(
+          `${APIBaseURL}/booking`,
+          {
+            paymentStatus: PaymentStatus.PAID,
+            bookingStatus: BookingStatus.IN_PROGRESS,
+            userId: user?.userId,
+          }
+        );
+        if (res.data && res.data.length > 0) setLastRunningBooking(res.data[0]);
+        setLoading({ isLoading: false, loadingMessage: "" });
+      } catch (error) {
+        handleAsyncError(error, "Error getting last running booking");
       }
-      else {
-        messageRef.current = `No Provider is currently available at this moment, for a live call on ${selectedAidServiceRef.current?.name}`;
-        setOpenMessageOverlay(true);
-      }
-    } catch (error) {
-      console.log(
-        "Error calling aid service provider",
-        (error as Error).message
-      );
-    }
-  };
+    };
+    getLastBooking();
+  }, []);
 
-  const sendWhatsappMessage = (phoneNumber: string, message: string) => {
-    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-    window.location.href = url;
-  }
+  useEffect(() => {
+    latestPostRef.current = Posts[0];
+    if (
+      latestPostRef.current?.id != Number(lastHealthTip) &&
+      !appSettings?.hideHealthTip
+    )
+      setOpenHealthTipOverlay(true);
+  }, []);
 
   return (
-        <IonContent>
-            <IonGrid>
-                <UserBannerCard user={user as IProfile} />
-                <ServiceQuickActions />
-                <IonRow>
-                    <IonCol size="12">
-                        <h2>My Bookings</h2>
-                        <ServiceBookings queryPayload={{userId: user?.userId}} />
-                    </IonCol>
-                </IonRow>
-            </IonGrid>
-             {/* FAB for Live Call interpreter */}
-                  <IonFab vertical="bottom" horizontal="start" slot="fixed">
-                    <IonButton
-                      className="ion-padding"
-                      shape="round"
-                      color="success"
-                      onClick={() => {
-                        selectedAidServiceRef.current = aidServicesRef.current.find((aService) => /sign/i.test(aService.name) );
-                        autoCallServiceProvider(selectedAidServiceRef.current?.id as number)
-                      }}
-                    >
-                      <span>
-                        <IonIcon className="ion-margin-horizontal" icon={ socketRef.current?.connected ? callSharp: refreshCircleOutline}></IonIcon>
-                          Call Interpreter
-                      </span>
-                    </IonButton>
-                  </IonFab>
+    <IonContent>
+      <IonGrid>
+        <UserBannerCard
+          user={user as IProfile}
+          lastRunningBooking={lastRunningBooking}
+        />
+        <ShortCutButtons user={user} />
+        <QuickActions />
+        <HealthPosts posts={Posts} />
+      </IonGrid>
 
-                  {/* FAB for Live Call interpreter */}
-                  <IonFab vertical="bottom" horizontal="end" slot="fixed">
-                    <IonFabButton
-                      size="small"
-                      color="success"
-                      onClick={() => {
-                        sendWhatsappMessage(callCenterPhoneNumber, `Hi team, I'm ${user?.firstName}`)
-                      }}
-                    >
-                    
-                      <span>
-                        <IonIcon className="ion-margin-horizontal" icon={chatboxSharp}></IonIcon>
-                      </span>
-                    </IonFabButton>
-                  </IonFab>
-            
-                  <IonPopover
-                  isOpen={openMessageOverlay}
-                  onDidDismiss={() => setOpenMessageOverlay(false)}
-                  >
-                    <IonContent>
-                      <p>{messageRef.current}</p>
-                      <p>Quickly Notify Our Customer Center</p>
-                      <IonButton expand="full" color={"primary"} onClick={() => {
-                        sendWhatsappMessage(callCenterPhoneNumber, messageRef.current)
-                      }}
-                      >
-                        <span style={{color: "white"}}>
-                          <IonIcon className="ion-margin-horizontal" icon={logoWhatsapp}></IonIcon>
-                          Notify Us
-                        </span>
-                      </IonButton>
-                      <IonButton color={"primary"} expand="full" onClick={() => setOpenMessageOverlay(false)}>
-                        <span style={{color: "white"}}>No problem, I will try later</span>
-                      </IonButton>
-                    </IonContent>
-                  </IonPopover>
+      <IonFab vertical="center" horizontal="end" slot="fixed">
+        <IonFabButton
+          color="danger"
+          onClick={async () => {
+            try {
+              setLoading({
+                isLoading: true,
+                loadingMessage: "getting location info",
+              });
+              const geoCoords = await getLocationCords();
+              setLoading({ isLoading: false, loadingMessage: "" });
+
+              const emergencyService = aidServicesRef.current.find((aService) =>
+                /emergency/i.test(aService.name)
+              );
+
+              const emergencyMsgBody = {
+                Message: `${user?.firstName} ${user?.lastName} is in need of ${emergencyService?.name}`,
+                cost: formatCurrency(emergencyService?.serviceRate || 0),
+                follow: `${AppBaseUrl}${BookingRoutes.TRACK_LOCATION}?lat=${geoCoords?.latitude}&lon=${geoCoords?.longitude}`,
+                GeoAccuracy: geoCoords?.accuracy,
+              };
+              const msgString = formatObjectToReadableText(emergencyMsgBody);
+              sendWhatsappMessage(callCenterPhoneNumber, msgString);
+            } catch (error) {
+              handleAsyncError(error, "Error sending SOS");
+            }
+          }}
+        >
+          <span style={{ fontWeight: "bold", fontSize: "2em" }}>
+            <IonIcon icon={medicalSharp}></IonIcon>
+          </span>
+        </IonFabButton>
+        <div className="ion-text-center">SOS</div>
+      </IonFab>
+
+      <IonPopover
+        isOpen={openMessageOverlay}
+        onDidDismiss={() => setOpenMessageOverlay(false)}
+      >
+        <IonContent>
+          <p>{messageRef.current}</p>
+          <p>Quickly Notify Our Customer Center</p>
+          <IonButton
+            expand="full"
+            color={"primary"}
+            onClick={() => {
+              sendWhatsappMessage(callCenterPhoneNumber, messageRef.current);
+            }}
+          >
+            <span style={{ color: "white" }}>
+              <IonIcon
+                className="ion-margin-horizontal"
+                icon={logoWhatsapp}
+              ></IonIcon>
+              Notify Us
+            </span>
+          </IonButton>
+          <IonButton
+            color={"primary"}
+            expand="full"
+            onClick={() => setOpenMessageOverlay(false)}
+          >
+            <span style={{ color: "white" }}>No problem, I will try later</span>
+          </IonButton>
         </IonContent>
-    )
-}
+      </IonPopover>
+
+      <IonPopover
+        isOpen={openHealthTipOverlay}
+        onDidDismiss={() => setOpenHealthTipOverlay(false)}
+      >
+          <h3 className="ion-text-center">Tip!</h3>
+          <p>Did You Know About This:</p>
+          <p> {latestPostRef.current?.title}</p>
+          <p>More Tips Down in the Health Tips Sections</p>
+          <IonItem>
+            <IonLabel>
+              <p>Do not show this again</p>
+            </IonLabel>
+            <IonCheckbox
+              checked={Boolean(appSettings?.hideHealthTip)}
+              onIonChange={(evt) => {
+                const setting: IAppSettings = {
+                  ...appSettings,
+                  hideHealthTip: Boolean(evt.detail.value),
+                } as IAppSettings;
+                setItem(LocalStorageEnum.APP_SETTINGS, setting);
+              }}
+            />
+          </IonItem>
+          <IonButton
+            expand="full"
+            fill="clear"
+            routerLink={`${PostRoutes.VIEW_POST}?pi=${latestPostRef.current?.id}`}
+          >
+            Know Detail{" "}
+            <IonIcon
+              className="ion-margin-horizonal"
+              icon={arrowForward}
+            ></IonIcon>{" "}
+          </IonButton>
+          <IonButton
+            expand="full"
+            onClick={() => setOpenHealthTipOverlay(false)}
+          >
+            Ok
+          </IonButton>
+      </IonPopover>
+    </IonContent>
+  );
+};

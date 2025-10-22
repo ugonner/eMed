@@ -5,6 +5,7 @@ import { LoginOrRegister } from "../components/LoginOrRegister"
 import { ChangePassword } from "../components/ChangePassword"
 import { ResetPassword } from "../components/ResetPassword"
 import { OTPHandler } from "../components/OTPHandler"
+import { NavigationBarGap } from "../../shared/components/partials/NavigationBarGap"
 
 export const AuthenticationsLayout = () => {
     return (
@@ -19,6 +20,7 @@ export const AuthenticationsLayout = () => {
                 <Route path={AuthRoutes.VERIFY_OTP} component={OTPHandler} />
             </IonRouterOutlet>
             </IonContent>
+            <NavigationBarGap />
         </IonPage>
     )
 }

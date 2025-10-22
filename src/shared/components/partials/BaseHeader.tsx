@@ -1,4 +1,5 @@
 import {
+  IonAvatar,
   IonButton,
   IonHeader,
   IonIcon,
@@ -7,7 +8,7 @@ import {
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
-import { menuSharp } from "ionicons/icons";
+import { menuSharp, notificationsSharp } from "ionicons/icons";
 
 export interface IHeaderProps {
   title: string;
@@ -23,6 +24,9 @@ export const BaseHeader = ({ title }: IHeaderProps) => {
           </IonButton>
         </IonMenuToggle>
         <IonTitle>{title}</IonTitle>
+        <span slot="end" className="ion-margin-horizontal">
+          <IonIcon icon={notificationsSharp}></IonIcon>
+        </span>
       </IonToolbar>
     </IonHeader>
   );
