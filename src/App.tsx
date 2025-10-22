@@ -1,5 +1,5 @@
 import { Redirect, Route, useHistory } from "react-router-dom";
-import { IonApp, IonRouterOutlet, setupIonicReact } from "@ionic/react";
+import { IonApp, IonRouterOutlet, IonTabs, setupIonicReact } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 
 /* Core CSS required for Ionic components to work properly */
@@ -54,6 +54,9 @@ import { BaseLayout } from "./shared/layouts/BaseLayout";
 import { TransactionsPage } from "./payment/pages/TransactionsPage";
 import { HomeRoutes } from "./home/enums/routes";
 import { HomeLayout } from "./home/layouts/HomeLayout";
+import { NavigationBar } from "./shared/components/partials/NavigationBar";
+import { PostRoutes } from "./post/enums/route";
+import { PostLayout } from "./post/layouts/PostLayout";
 
 setupIonicReact();
 const App: React.FC = () => {
@@ -67,16 +70,18 @@ const App: React.FC = () => {
               <BaseMenu />
               <AdminMenu />
               <IonReactRouter>
+                  
                 <IonRouterOutlet>
                   <Route path={HomeRoutes.HOME} component={HomeLayout} />
                   <Route
                     path={AidServiceRoutes.HOME}
                     component={AidServiceLayout}
                   />
-                  <Route path={BookingRoutes.HOME} component={BookingLayout} />
                   <Route path={UserRoutes.HOME} component={UserLayout} />
                   <Route path={AdminRoutes.HOME} component={AdminLayout} />
                   <Route path={AuthRoutes.HOME} component={AuthenticationsLayout} />
+                  <Route path={BookingRoutes.HOME} component={BookingLayout} />
+                  <Route path={PostRoutes.HOME} component={PostLayout} />
                   
                     <Route exact={false} path={PaymetRoutes.VERIFY_PAYMENT} component={VerifyPaymentCallbackPage} />
                      <Route path={PaymetRoutes.TRANSACTIONS} component={TransactionsPage} />
@@ -84,6 +89,8 @@ const App: React.FC = () => {
                     <Redirect to={HomeRoutes.HOME} />
                   
                 </IonRouterOutlet>
+                {/* <NavigationBar /> */}
+                
               </IonReactRouter>
               </BaseLayout>
           </AuthGuardContextProvider>

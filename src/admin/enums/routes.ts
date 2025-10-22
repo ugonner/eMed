@@ -5,5 +5,6 @@ export enum AdminRoutes {
     BOOKING = "/admin/booking",
     CALL = "/admin/call",
     REPORT = "/admin/report",
-    TRANSACTION = "/admin/transaction"
+    TRANSACTION = "/admin/transaction",
+    REVIEWS = "/admin/reviews"
 }

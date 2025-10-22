@@ -1,16 +1,13 @@
 import {
-  IonCol,
   IonContent,
-  IonGrid,
   IonPage,
   IonRouterOutlet,
-  IonRow,
 } from "@ionic/react";
 import { BaseHeader } from "../../shared/components/partials/BaseHeader";
 import { Route } from "react-router";
 import { PaymetRoutes } from "../enums/routes";
-import { VerifyPaymentPage } from "../pages/VerifyPaymentPage";
 import { ServiceTransactions } from "../Components/ServiceTransactions";
+import { NavigationBarGap } from "../../shared/components/partials/NavigationBarGap";
 
 export const PaymentLayout = () => {
   return (
@@ -23,6 +20,7 @@ export const PaymentLayout = () => {
                   component={ServiceTransactions}
                 />{" "}
               </IonRouterOutlet>
+              <NavigationBarGap />
       </IonContent>
     </IonPage>
   );

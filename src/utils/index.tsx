@@ -117,3 +117,24 @@ export const useLocalStorage = (): IUseLocalStorage => {
 
   return { getItem, setItem };
 };
+
+export function formatObjectToReadableText(obj: any): string {
+  if (obj == null) return "No data";
+  if (typeof obj !== "object") return String(obj);
+
+  return Object.entries(obj)
+    .map(([key, value]) => {
+      const label = key.charAt(0).toUpperCase() + key.slice(1);
+      if (typeof value === "object" && value !== null) {
+        return `${label}: (${formatObjectToReadableText(value)})`;
+      }
+      return `${label}: ${value}`;
+    })
+    .join(", ");
+}
+
+export const sendWhatsappMessage = (phoneNumber: string, message: string) => {
+    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.location.href = url;
+  }
+

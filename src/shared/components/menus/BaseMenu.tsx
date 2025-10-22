@@ -2,6 +2,7 @@ import {
   briefcase,
   callSharp,
   cart,
+  chatbox,
   home,
   logOutSharp,
   person,
@@ -19,6 +20,7 @@ import {
   IonLabel,
   IonList,
   IonMenu,
+  IonModal,
   IonText,
   IonToolbar,
 } from "@ionic/react";
@@ -29,6 +31,11 @@ import { defaultUserImageUrl } from "../../DATASETS/defaults";
 import { useAuthGuardContextStore } from "../../../auth/contexts/AuthGuardContext";
 import { AuthRoutes } from "../../../auth/enums/routes";
 import { PaymetRoutes } from "../../../payment/enums/routes";
+import { useState } from "react";
+import { ReviewAndRate } from "../../../review/components/ReviewndRating";
+import { ServiceType } from "../../../review/enums/service";
+import { BookingRoutes } from "../../../Booking/enums/routes";
+import { icon } from "leaflet";
 
 export interface INavigationButton {
   id: number;
@@ -38,8 +45,9 @@ export interface INavigationButton {
 }
 
 export const BaseMenu = () => {
-  const { isLoggedIn, logOutUser } = useAuthGuardContextStore();
-
+  const { logOutUser } = useAuthGuardContextStore();
+  const [openReviewwOverlay, setOpenReviewOverlay] = useState(false);
+  
   const user = getLocalUser();
 
   const navigationButtonss: INavigationButton[] = [
@@ -52,9 +60,15 @@ export const BaseMenu = () => {
     },
     {
       id: 3,
-      label: "My Transactions",
-      routeLink: `${PaymetRoutes.TRANSACTIONS}`,
+      label: "My Appointments",
+      routeLink: `${BookingRoutes.USER_BOOKINGS}`,
       icon: briefcase,
+    },
+    {
+      id: 4,
+      label: "Subscription",
+      routeLink:"",
+      icon: briefcase
     }
   ];
   
@@ -64,12 +78,6 @@ export const BaseMenu = () => {
       <IonHeader>
         <IonToolbar>
           <IonItem>
-            <IonAvatar>
-              <IonImg
-                src={user?.avatar || defaultUserImageUrl}
-                alt={"Your display"}
-              />
-            </IonAvatar>
             <IonLabel className="ion-margin">
               <p>{user?.firstName}</p>
             </IonLabel>
@@ -79,13 +87,22 @@ export const BaseMenu = () => {
       <IonContent>
         <IonList>
           {navigationButtonss.map((navButton) => (
-            <IonItem key={navButton.id}>
-              <IonButton fill="clear" routerLink={navButton.routeLink}>
+            <IonItem key={navButton.id} routerLink={navButton.routeLink}>
                 <IonIcon icon={navButton.icon}></IonIcon>
                 <IonLabel className="ion-margin"> {navButton.label} </IonLabel>
-              </IonButton>
+              
             </IonItem>
           ))}
+          <IonItem
+          role="button"
+          aria-haspopup={true}
+          aria-expanded={openReviewwOverlay}
+          onClick={() => setOpenReviewOverlay(!openReviewwOverlay)}
+          >
+             <IonIcon icon={chatbox}></IonIcon>
+             <samp className="ion-margin-horizontal">Review Feedback</samp>
+            
+          </IonItem>
           <IonItem
             role="button"
             aria-label="logout"
@@ -99,6 +116,22 @@ export const BaseMenu = () => {
           </IonItem>
         </IonList>
       </IonContent>
+      <IonModal
+      isOpen={openReviewwOverlay}
+      onDidDismiss={() => setOpenReviewOverlay(false)}
+      >
+        <IonContent>
+          
+        <IonButton expand="full" fill="clear" onClick={() => setOpenReviewOverlay(false)}>close</IonButton>
+        <div>
+          <ReviewAndRate
+          serviceTypeEntityId={1}
+          serviceType={ServiceType.APP_PROFILE}
+          onCompletion={() => setOpenReviewOverlay(false)}
+          />
+        </div>
+        </IonContent>
+      </IonModal>
     </IonMenu>
   );
 };

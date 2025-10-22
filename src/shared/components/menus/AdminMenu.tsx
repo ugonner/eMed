@@ -3,6 +3,7 @@ import {
   briefcaseSharp,
   callSharp,
   cart,
+  chatbox,
   folderOpen,
   home,
   logOutSharp,
@@ -61,9 +62,9 @@ export const AdminMenu = () => {
     },
     {
       id: 4,
-      label: "Bookings",
-      routeLink: `${AdminRoutes.CALL}`,
-      icon: callSharp,
+      label: "Reviews / Feedbacks",
+      routeLink: `${AdminRoutes.REVIEWS}`,
+      icon: chatbox,
     },
     {
         id: 5,

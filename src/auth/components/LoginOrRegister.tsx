@@ -2,16 +2,12 @@ import { InputInputEventDetail, IonInputCustomEvent } from "@ionic/core";
 import {
   IonButton,
   IonContent,
-  IonHeader,
-  IonImg,
   IonInput,
   IonItem,
   IonModal,
   IonSegment,
   IonSegmentButton,
-  IonTitle,
-  useIonRouter,
-  useIonToast,
+  useIonRouter
 } from "@ionic/react";
 import { Dispatch, FormEvent, useRef, useState } from "react";
 import { APIBaseURL, postData } from "../../shared/api/base";
@@ -146,15 +142,23 @@ const login = async () => {
       <IonContent className="ion-padding">
        
         <div className="ion-text-center">
+          <h1>Flex MedCare&trade; </h1>
           <img src="/favicon.png" alt="able aid" style={{width: "100px", height: "auto"}}/>
-          <h1>Welcome to AbleAid &trade;  </h1>
-          <p>
-            You are welcome to AbleAid, Your effort to enjoying and promoting inclusive service delivery is just A Sign Up Away.
-          </p>
-          <small>What have you done to promote an inclusive society today? Sign in and Book A Service for your event</small>
-        </div>
+           <p style={{fontWeight: "bold"}}> You are welcome to Flex MedCare&trade;</p>
+           <p>
+            <span style={{fontWeight: "bold"}}> Flex MedCare&trade; </span> offers professional health care services right at your comfort.
+           </p>
+           <p>You are just a Sign Up away from booking your essential health care service</p>
+          </div>
         <div className="">
-          
+          <IonSegment>
+            <IonSegmentButton onClick={() => setUsePhoneNumber(false)}>
+              Use Email
+            </IonSegmentButton>
+            <IonSegmentButton onCanPlay={() => setUsePhoneNumber(true)}>
+              Use PhoneNumber
+            </IonSegmentButton>
+          </IonSegment>
           <form>
             <div className="">
               {usePhoneNumber ? (
@@ -300,7 +304,7 @@ const login = async () => {
           <IonContent>
             <OTPHandler
               otpSize={6}
-              userEmail={authUser.email as string}
+              userEmail={authUser.email || authUser.phoneNumber as string}
               onCompletion={async (dto: { otp: string; email: string }) => {
                 await verifyAccount(dto);
               }}

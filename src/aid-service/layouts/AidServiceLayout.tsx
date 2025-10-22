@@ -9,6 +9,7 @@ import { CreateAidServicePage } from "../pages/CreateAidServicePage";
 import { AidServicePage } from "../pages/AidServicePage";
 import { BaseHeader } from "../../shared/components/partials/BaseHeader";
 import { AuthGuard } from "../../auth/guards/AuthGuard";
+import { NavigationBarGap } from "../../shared/components/partials/NavigationBarGap";
 
 export const AidServiceLayout = () => {
     return (
@@ -26,7 +27,7 @@ export const AidServiceLayout = () => {
                 <Route path={AidServiceRoutes.AID_SERVICE_SINGLE} component={AidServicePage} />
 
             </IonRouterOutlet>
-            
+            <NavigationBarGap />
         </IonContent>
         </IonPage>
         </AuthGuard>

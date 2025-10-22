@@ -8,6 +8,8 @@ import { ReportDashboard } from "../../report/components/ReportDashboard";
 import { AdminDashboard } from "../pages/Dashboard";
 import { AdminHeader } from "../../shared/components/partials/AdminHeader";
 import { PaymentTransactionDashboard } from "../../payment/Components/TransactionDashboard";
+import { ReviewDashboard } from "../../review/components/ReviewDashboard";
+import { NavigationBarGap } from "../../shared/components/partials/NavigationBarGap";
 
 export const AdminLayout = () => {
   return (
@@ -24,7 +26,9 @@ export const AdminLayout = () => {
         <Route path={AdminRoutes.BOOKING} component={BookingDashboard} />
         <Route path={AdminRoutes.REPORT} component={ReportDashboard} />
         <Route path={AdminRoutes.TRANSACTION} component={PaymentTransactionDashboard} />
+        <Route path={AdminRoutes.REVIEWS} component={ReviewDashboard} />
       </IonRouterOutlet>
+      <NavigationBarGap />
       </IonContent>
       
     </IonPage>
