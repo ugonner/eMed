@@ -150,46 +150,16 @@ export const HomePage = () => {
         <div className="ion-text-center">SOS</div>
       </IonFab>
 
-      <IonPopover
-        isOpen={openMessageOverlay}
-        onDidDismiss={() => setOpenMessageOverlay(false)}
-      >
-        <IonContent>
-          <p>{messageRef.current}</p>
-          <p>Quickly Notify Our Customer Center</p>
-          <IonButton
-            expand="full"
-            color={"primary"}
-            onClick={() => {
-              sendWhatsappMessage(callCenterPhoneNumber, messageRef.current);
-            }}
-          >
-            <span style={{ color: "white" }}>
-              <IonIcon
-                className="ion-margin-horizontal"
-                icon={logoWhatsapp}
-              ></IonIcon>
-              Notify Us
-            </span>
-          </IonButton>
-          <IonButton
-            color={"primary"}
-            expand="full"
-            onClick={() => setOpenMessageOverlay(false)}
-          >
-            <span style={{ color: "white" }}>No problem, I will try later</span>
-          </IonButton>
-        </IonContent>
-      </IonPopover>
-
+     
       <IonPopover
         isOpen={openHealthTipOverlay}
         onDidDismiss={() => setOpenHealthTipOverlay(false)}
       >
+        <div className="ion-padding" style={{overflow: "auto"}}>
+          
           <h3 className="ion-text-center">Tip!</h3>
           <p>Did You Know About This:</p>
-          <p> {latestPostRef.current?.title}</p>
-          <p>More Tips Down in the Health Tips Sections</p>
+          <p style={{fontWeight: "bold"}}> {latestPostRef.current?.title}</p>
           <IonItem>
             <IonLabel>
               <p>Do not show this again</p>
@@ -205,7 +175,9 @@ export const HomePage = () => {
               }}
             />
           </IonItem>
-          <IonButton
+          
+        </div>
+        <IonButton
             expand="full"
             fill="clear"
             routerLink={`${PostRoutes.VIEW_POST}?pi=${latestPostRef.current?.id}`}

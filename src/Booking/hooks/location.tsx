@@ -1,16 +1,10 @@
 import {
   Geolocation,
-  PermissionStatus,
-  Position,
+  Position
 } from "@capacitor/geolocation";
 import { useAsyncHelpersContext } from "../../shared/contexts/async-helpers";
 import { ILocationCord } from "../components/LocationVisualizer";
 import { ILocationAddress } from "../../aid-service/dtos/aid-service-profile.dto";
-import {
-  AndroidSettings,
-  IOSSettings,
-  NativeSettings,
-} from "capacitor-native-settings";
 import { isPlatform, useIonAlert } from "@ionic/react";
 import { IOpenStreetReverseGeoCode } from "../../aid-service/interfaces/location-geocode";
 import { App } from "@capacitor/app";
@@ -27,14 +21,7 @@ export const useGeoLocationStore = (): IUseGeoLocationStore => {
   const [presentAlert] = useIonAlert();
   const openAppSettings = async () => {
     try {
-      if (isPlatform("android"))
-        await NativeSettings.openAndroid({
-          option: AndroidSettings.ApplicationDetails,
-        });
-      else if (isPlatform("ios"))
-        await NativeSettings.openIOS({ option: IOSSettings.App });
-      else
-        presentAlert({
+      presentAlert({
           message:
             "Can not automatically open your app settings, do this manually in your device settings",
           buttons: [
