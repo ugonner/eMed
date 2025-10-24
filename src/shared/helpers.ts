@@ -1,4 +1,3 @@
-import { TextToSpeech } from "@capacitor-community/text-to-speech";
 import { useIonToast } from "@ionic/react";
 
 
@@ -32,16 +31,6 @@ export const formatCamelCaseToSentence = (camelCasedString: string): string => {
 function isUpperCase(char: string) {
   return char === char.toUpperCase() && char !== char.toLowerCase();
 }
-
-export const speakText = async (text: string) => {
-  try {
-    await TextToSpeech.speak({
-      text,
-    });
-  } catch (error) {
-    console.log("Error speaking tect", (error as Error).message);
-  }
-};
 
 export const concatArrayBuffers = (buffers: ArrayBuffer[]) => {
   const totalLength = buffers.reduce((sum, buf) => sum + buf.byteLength, 0);
