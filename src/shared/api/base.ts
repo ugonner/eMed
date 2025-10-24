@@ -4,11 +4,11 @@ export const serverPort = 4000;
 export const appPort = 8100;
 
 const hostname = window.location.hostname;
-const baseIp = /(\d\d\d\.)+/i.test(hostname) ?  `https://${hostname}:${serverPort}` : `srv-d3s8regdl3ps73d6mnfg`;
+const baseIp = /(\d\d\d\.)+/i.test(hostname) ?  `https://${hostname}:${serverPort}` : `https://flexmedcare.onrender.com`;
 
 export const socketIOBaseURL = `${baseIp}/call`;
 export const APIBaseURL = `${baseIp}/api`;
-export const AppBaseUrl = /(\d\d\d\.)+/i.test(hostname) ? `${baseIp.replace(`:${serverPort}`, "")}:${appPort}` : `https://ableaid.vercel.app`;
+export const AppBaseUrl = /(\d\d\d\.)+/i.test(hostname) ? `${baseIp.replace(`:${serverPort}`, "")}:${appPort}` : `https://flexmedcare.vercel.app`;
 
 export const convertObjectLiteralToQueryString = (payload: {[key: string]: unknown}) => {
     let str = "";
