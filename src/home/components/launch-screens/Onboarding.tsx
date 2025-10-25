@@ -59,7 +59,7 @@ export const OnBoarding = () => {
         fontWeight: "bold",
         position: "relative",
         width: "100%",
-        height: "100vh"
+        height: "100vh",
       }}
     >
       <h1 style={{ fontWeight: "bolder" }}>Welcome To FlexMedCare&trade;</h1>
@@ -102,61 +102,60 @@ export const OnBoarding = () => {
         </p>
       </div>
       <div
-      className="ion-padding"
-      style={{
-        position: "absolute",
-        bottom: "3%",
-        left: "4$",
-        width: "100%"
-      }}>
-        <div
+        className="ion-padding"
         style={{
-          display: "flex",
-          justifyContent: "space-between",
+          position: "absolute",
+          bottom: "3%",
+          left: "4$",
+          width: "100%",
         }}
       >
-        <div>
-          {onboardingItems[pageNumber - 1] && (
-            <span
-            role="button"
-              onClick={() => setPageNumber(pageNumber - 1)}
-            >
-              Back
-            </span>
-          )}
-        </div>
-        <div>
-          {!item && (
-            <IonButton
-              shape="round"
-              onClick={() => {
-                let appSettings: IAppSettings | null = getItem<IAppSettings>(
-                  LocalStorageEnum.APP_SETTINGS
-                );
-                appSettings = { ...(appSettings || {}), isOldUser: true };
-                setItem(LocalStorageEnum.APP_SETTINGS, appSettings);
-                window.location.href = HomeRoutes.HOME;
-              }}
-            >
-              Get Started
-            </IonButton>
-          )}
-        </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <div>
+            {onboardingItems[pageNumber - 1] && (
+              <span role="button" onClick={() => setPageNumber(pageNumber - 1)}>
+                Back
+              </span>
+            )}
+          </div>
+          <div>
+            {!item && (
+              <IonButton
+                shape="round"
+                onClick={() => {
+                  let appSettings: IAppSettings | null = getItem<IAppSettings>(
+                    LocalStorageEnum.APP_SETTINGS
+                  );
+                  appSettings = { ...(appSettings || {}), isOldUser: true };
+                  setItem(LocalStorageEnum.APP_SETTINGS, appSettings);
+                  window.location.href = HomeRoutes.HOME;
+                }}
+              >
+                Get Started
+              </IonButton>
+            )}
+          </div>
 
-        <div>
-            
-            <span
-            role="button"
-              onClick={() => {
-                if(onboardingItems[pageNumber + 1]) setPageNumber(pageNumber + 1);
-                else setPageNumber(onboardingItems.length);
-              }}
-            >
-              Next
-            </span>
-          
+          <div>
+            {item && (
+              <span
+                role="button"
+                onClick={() => {
+                  if (onboardingItems[pageNumber + 1])
+                    setPageNumber(pageNumber + 1);
+                  else setPageNumber(onboardingItems.length);
+                }}
+              >
+                Next
+              </span>
+            )}
+          </div>
         </div>
-      </div>
       </div>
     </div>
   );

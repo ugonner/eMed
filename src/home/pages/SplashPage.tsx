@@ -24,7 +24,7 @@ export const SplashPage = () => {
     const timer = setTimeout(() => {
       if (appSettings?.isOldUser) router.push(HomeRoutes.HOME);
       else router.push(HomeRoutes.ONBOARDING);
-    }, 20000);
+    }, 7000);
 
     return () => clearTimeout(timer);
   }, []);

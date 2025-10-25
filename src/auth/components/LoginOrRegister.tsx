@@ -2,8 +2,10 @@ import { InputInputEventDetail, IonInputCustomEvent } from "@ionic/core";
 import {
   IonButton,
   IonContent,
+  IonIcon,
   IonInput,
   IonItem,
+  IonLabel,
   IonModal,
   IonSegment,
   IonSegmentButton,
@@ -25,6 +27,7 @@ import { ManageUserClusters } from "../../user/components/cluster/ManageUserClus
 import { AuthRoutes } from "../enums/routes";
 import { UserRoutes } from "../../user/enums/routes.enum";
 import { HomeRoutes } from "../../home/enums/routes";
+import { eye, eyeOff } from "ionicons/icons";
 
 export interface IAuthUser {
   email?: string;
@@ -155,7 +158,7 @@ const login = async () => {
             <IonSegmentButton onClick={() => setUsePhoneNumber(false)}>
               Use Email
             </IonSegmentButton>
-            <IonSegmentButton onCanPlay={() => setUsePhoneNumber(true)}>
+            <IonSegmentButton onClick={() => setUsePhoneNumber(true)}>
               Use PhoneNumber
             </IonSegmentButton>
           </IonSegment>
@@ -168,7 +171,8 @@ const login = async () => {
                     name="phoneNumber"
                     label="Phone Number"
                     value={authUser.phoneNumber}
-                    labelPlacement="floating"
+                    placeholder="2347061234567"
+                    labelPlacement="stacked"
                     onInput={handleInput}
                     required={true}
                   ></IonInput>
@@ -200,14 +204,15 @@ const login = async () => {
                     handleInput(evt); 
                   }}
                 ></IonInput>
-              </IonItem>
-              <IonButton
-                fill="clear"
-                size="small"
+                <IonLabel 
+                title={showPassword ? "hide password": "show password"}
+                role="button"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                show / hide password
-              </IonButton>
+                  <IonIcon icon={showPassword ? eyeOff : eye} />
+                </IonLabel>
+              </IonItem>
+              
             </div>
 
             {isSignUp ? (
@@ -245,11 +250,7 @@ const login = async () => {
             )}
             <div className="form-group">
               <IonButton size="large" expand="full" onClick={() => {
-                if(isSignUp) {
-                  signUp()
-                  .then(() => login())
-                  
-                }
+                if(isSignUp) signUp();
                 else login();
               }}>
                 {isSignUp ? "Register" : "Login"}

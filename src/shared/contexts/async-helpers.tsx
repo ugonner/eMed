@@ -32,7 +32,7 @@ export const AsyncHelperProvider = ({children}: React.PropsWithChildren) => {
     
     const handleAsyncError = (error: unknown, msg?: string) => {
         console.log(msg, (error as Error).message);
-        presentToastMessage(msg ? msg : (error as Error).message)
+        presentToastMessage(`${msg}: ${(error as Error).message}`)
     }
 
     const initAsyncHelperProps: IAsyncProps = {
