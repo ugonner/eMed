@@ -155,7 +155,8 @@ export const HomePage = () => {
         isOpen={openHealthTipOverlay}
         onDidDismiss={() => setOpenHealthTipOverlay(false)}
       >
-        <div className="ion-padding" style={{overflow: "auto"}}>
+        <IonContent className="ion-padding">
+          <div className="ion-padding" style={{overflow: "auto"}}>
           
           <h3 className="ion-text-center">Tip!</h3>
           <p>Did You Know About This:</p>
@@ -194,6 +195,7 @@ export const HomePage = () => {
           >
             Ok
           </IonButton>
+        </IonContent>
       </IonPopover>
     </IonContent>
   );
