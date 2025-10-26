@@ -28,9 +28,8 @@ export const AidServiceActionMenu = ({aidService}: IAidServiceActionMenuProps) =
         else if(action === AidServiceActions.CREATE) router.push(AidServiceRoutes.AID_SERVICE_CREATE);
         else if(action === AidServiceActions.MANAGE) setOpenEditAidServiceOverlay(true);
         else if(action === AidServiceActions.DELETE) {
-            postData(`${APIBaseURL}/aid-service`, {
-                method: "delete",
-                aidServiceId: aidService.id
+            postData(`${APIBaseURL}/aid-service/${aidService.id}`, {
+                method: "delete"
             })
             .catch((err) => console.log( "Error deleting aid service",(err.message)))
         }

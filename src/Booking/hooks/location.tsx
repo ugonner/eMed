@@ -8,6 +8,8 @@ import { ILocationAddress } from "../../aid-service/dtos/aid-service-profile.dto
 import { isPlatform, useIonAlert } from "@ionic/react";
 import { IOpenStreetReverseGeoCode } from "../../aid-service/interfaces/location-geocode";
 import { App } from "@capacitor/app";
+import { Capacitor } from "@capacitor/core";
+import { AndroidSettings, IOSSettings, NativeSettings } from "capacitor-native-settings";
 
 export interface IUseGeoLocationStore {
   getGeoCodeReverse: (dto: ILocationCord) => Promise<ILocationAddress | null>;
@@ -21,7 +23,11 @@ export const useGeoLocationStore = (): IUseGeoLocationStore => {
   const [presentAlert] = useIonAlert();
   const openAppSettings = async () => {
     try {
-      presentAlert({
+      if(Capacitor.isNativePlatform()){
+        if(isPlatform("android")) NativeSettings.openAndroid({option: AndroidSettings.Application});
+        if(isPlatform("ios")) NativeSettings.openIOS({option: IOSSettings.App});
+      }
+      else presentAlert({
           message:
             "Can not automatically open your app settings, do this manually in your device settings",
           buttons: [
@@ -86,10 +92,10 @@ export const useGeoLocationStore = (): IUseGeoLocationStore => {
     try {
       const perm = await Geolocation.checkPermissions();
       
-      if (isPlatform("capacitor") && perm.location !== "granted")
+      if (Capacitor.isNativePlatform() && perm.location !== "granted")
         await Geolocation.requestPermissions();
 
-      const pos: Position | GeolocationPosition = isPlatform("capacitor")
+      const pos: Position | GeolocationPosition = Capacitor.isNativePlatform()
         ? await Geolocation.getCurrentPosition({ enableHighAccuracy: true })
         : await Geolocation.getCurrentPosition();
 

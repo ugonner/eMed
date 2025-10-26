@@ -1,5 +1,6 @@
 export interface IAppSettings {
-    hideJoinClustersOverlay: boolean;
+    hideJoinClustersOverlay?: boolean;
     useMFA?: Boolean;
     hideHealthTip?: boolean;
+    isOldUser?: boolean;
 }

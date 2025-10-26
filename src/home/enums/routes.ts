@@ -1,3 +1,5 @@
 export enum HomeRoutes {
-    HOME = "/home"
+    HOME = "/home",
+    ONBOARDING = "/onboarding",
+    SPLASH_PAGE = "/splash"
 }

@@ -2,6 +2,7 @@ import { useIonToast } from "@ionic/react";
 import { useRef } from "react";
 import { IAuthUserProfile, IProfile } from "../user/interfaces/user";
 import { LocalStorageEnum } from "../shared/enums";
+import { Capacitor } from "@capacitor/core";
 
 export interface IUsePresentToastResult {
   presentToastMessage: (
@@ -134,7 +135,11 @@ export function formatObjectToReadableText(obj: any): string {
 }
 
 export const sendWhatsappMessage = (phoneNumber: string, message: string) => {
-    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    const url = Capacitor.isNativePlatform() ? 
+    `whatsapp://send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`
+    :
+    `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}` ;
+    
     window.location.href = url;
   }
 

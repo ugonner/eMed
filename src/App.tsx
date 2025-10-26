@@ -57,16 +57,28 @@ import { HomeLayout } from "./home/layouts/HomeLayout";
 import { NavigationBar } from "./shared/components/partials/NavigationBar";
 import { PostRoutes } from "./post/enums/route";
 import { PostLayout } from "./post/layouts/PostLayout";
+import { OnboardingPage } from "./home/pages/OnboardingPage";
+import { useLocalStorage } from "./utils";
+import { IAppSettings } from "./shared/interfaces/app-settings";
+import { LocalStorageEnum } from "./shared/enums";
+import { useEffect, useState } from "react";
+import { SplashScreen } from "@capacitor/splash-screen";
+import { SplashPage } from "./home/pages/SplashPage";
 
 setupIonicReact();
 const App: React.FC = () => {
+
+  useEffect(() => {
+    SplashScreen.hide();
+  }, [])
+
   return (
     <IonApp>
       <AsyncHelperProvider>
         <InitContextProvider>
           <AuthGuardContextProvider>
               <BaseLayout>
-                
+               
               <BaseMenu />
               <AdminMenu />
               <IonReactRouter>
@@ -85,8 +97,9 @@ const App: React.FC = () => {
                   
                     <Route exact={false} path={PaymetRoutes.VERIFY_PAYMENT} component={VerifyPaymentCallbackPage} />
                      <Route path={PaymetRoutes.TRANSACTIONS} component={TransactionsPage} />
-                            
-                    <Redirect to={HomeRoutes.HOME} />
+                     <Route path={HomeRoutes.ONBOARDING} component={OnboardingPage} /> 
+                     <Route path={HomeRoutes.SPLASH_PAGE} component={SplashPage} />
+                    <Redirect to={HomeRoutes.SPLASH_PAGE} />
                   
                 </IonRouterOutlet>
                 {/* <NavigationBar /> */}
