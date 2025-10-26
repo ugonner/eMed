@@ -5,6 +5,9 @@ import { RoleDTO } from "../../auth/dtos/role.dto";
 import { ICluster } from "../../user/interfaces/cluster";
 import { IAidService } from "../../aid-service/interfaces/aid-service.interface";
 import { IQueryResult } from "../interfaces/api-response";
+import { IAppSettings } from "../interfaces/app-settings";
+import { useLocalStorage } from "../../utils";
+import { LocalStorageEnum } from "../enums";
 
 export interface IInitContext {
     tagsRef: MutableRefObject<TagDTO[]>;
@@ -12,19 +15,22 @@ export interface IInitContext {
     clustersRef: MutableRefObject<ICluster[]>;
     aidServicesRef: MutableRefObject<IAidService[]>;
     setReLoadEntities: Dispatch<SetStateAction<boolean>>;
-    
+    appSettings: IAppSettings | null;
+    updateAppSettings: (dto: Partial<IAppSettings>, config: {persist: boolean}) => void;
 }
 
 const initContext = createContext<IInitContext>({} as IInitContext);
 
 export const InitContextProvider = ({children}: PropsWithChildren) => {
+    const {getItem, setItem} = useLocalStorage();
+
     const tagsRef = useRef<TagDTO[]>([]);
     const [reLoadEntities, setReLoadEntities] = useState(false);
     const rolesRef = useRef<RoleDTO[]>([]);
     const clustersRef = useRef<ICluster[]>([]);
     const aidServicesRef = useRef<IAidService[]>([]);
     const entitiesLoadCountRef = useRef<number>(0);
-
+    const [appSettings, setAppSettings] = useState<IAppSettings | null>(getItem<IAppSettings>(LocalStorageEnum.APP_SETTINGS));
     const getTags = async () => {
         const res = await getData<TagDTO[]>(`${APIBaseURL}/aid-service/tag`);
         tagsRef.current = res;
@@ -53,6 +59,12 @@ export const InitContextProvider = ({children}: PropsWithChildren) => {
         getAidServices().catch((error) => console.log("Error setting init aidService ", (error as Error).message));
         entitiesLoadCountRef.current += entitiesLoadCountRef.current;
     }
+    const updateAppSettings = (dto: Partial<IAppSettings>, config: {persist: boolean}) => {
+        const setting = getItem<IAppSettings>(LocalStorageEnum.APP_SETTINGS);
+       if(config.persist)  setItem(LocalStorageEnum.APP_SETTINGS, {...(setting || {}), ...dto} as IAppSettings);
+        setAppSettings({...(setting || {}), ...dto});
+    }
+
     useEffect(() => {
         loadInitEntities();
     }, [reLoadEntities])
@@ -66,7 +78,9 @@ export const InitContextProvider = ({children}: PropsWithChildren) => {
         rolesRef,
         clustersRef,
         aidServicesRef,
-        setReLoadEntities
+        setReLoadEntities,
+        appSettings,
+        updateAppSettings
 
     }
 
