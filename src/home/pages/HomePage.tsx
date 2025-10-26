@@ -31,6 +31,8 @@ import { IAuthUserProfile, IProfile } from "../../user/interfaces/user";
 import {
   arrowForward,
   chatboxSharp,
+  checkboxOutline,
+  checkboxSharp,
   colorFill,
   logoWhatsapp,
   medicalSharp,
@@ -55,7 +57,7 @@ import { ShortCutButtons } from "../components/ShortCutButtons";
 export const callCenterPhoneNumber = "2347034667861";
 export const HomePage = () => {
   const { getLocationCords } = useGeoLocationStore();
-  const { aidServicesRef } = useIInitContextStore();
+  const { updateAppSettings, appSettings, aidServicesRef } = useIInitContextStore();
   const { getItem, setItem } = useLocalStorage();
   const { setLoading, handleAsyncError } = useAsyncHelpersContext();
 
@@ -67,7 +69,7 @@ export const HomePage = () => {
   const latestPostRef = useRef<IPost>();
   const authUser = getItem<IAuthUserProfile>(LocalStorageEnum.USER);
   const user = authUser?.profile;
-  const appSettings = getItem<IAppSettings>(LocalStorageEnum.APP_SETTINGS);
+ 
   const lastHealthTip = getItem<string>(
     LocalStorageEnum.LAST_VIEWED_HEALTH_TIP
   );
@@ -152,29 +154,34 @@ export const HomePage = () => {
 
      
       <IonPopover
-        isOpen={openHealthTipOverlay}
-        onDidDismiss={() => setOpenHealthTipOverlay(false)}
+        isOpen={!appSettings?.hideHealthTip}
+        onDidDismiss={() => updateAppSettings({hideHealthTip: true}, {persist: false})}
       >
-        <IonContent>
-          <div className="ion-margin" style={{overflow: "auto"}}>
+        <div>
+          <div className="ion-margin">
           
           <h3 className="ion-text-center">Tip!</h3>
           <p>Did You Know About This:</p>
           <p style={{fontWeight: "bold"}}> {latestPostRef.current?.title}</p>
-          <IonItem>
-            <IonLabel>
-              <p>Do not show this again</p>
-            </IonLabel>
-            <IonCheckbox
-              checked={Boolean(appSettings?.hideHealthTip)}
-              onIonChange={(evt) => {
+          <IonItem
+            role="buton"
+            aria-label={appSettings?.hideHealthTip ? "show health tip": "hide health tip"}
+            onClick={() => {
                 const setting: IAppSettings = {
-                  ...appSettings,
-                  hideHealthTip: Boolean(evt.detail.value),
+                  hideHealthTip: appSettings?.hideHealthTip ? false : true,
                 } as IAppSettings;
-                setItem(LocalStorageEnum.APP_SETTINGS, setting);
-              }}
+                updateAppSettings(setting, {persist: true});
+              }}  
+          
+          >
+            <IonIcon 
+            icon={appSettings?.hideHealthTip ? checkboxOutline : checkboxSharp} 
             />
+            <IonLabel
+            className="ion-margin-horizontal"
+            >
+              <p>{appSettings?.hideHealthTip ? "shw health tip": "hide health tip"} </p>
+          </IonLabel>
           </IonItem>
           
         </div>
@@ -191,11 +198,13 @@ export const HomePage = () => {
           </IonButton>
           <IonButton
             expand="full"
-            onClick={() => setOpenHealthTipOverlay(false)}
+            onClick={() => {
+              updateAppSettings({hideHealthTip: true}, {persist: false})
+            }}
           >
             Ok
           </IonButton>
-        </IonContent>
+        </div>
       </IonPopover>
     </IonContent>
   );

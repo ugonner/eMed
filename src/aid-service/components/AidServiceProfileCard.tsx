@@ -15,7 +15,7 @@ import { AidServiceRoutes } from "../enums/routes";
 import { ProfileActionsMenu } from "./ProfileActionMenu";
 import { compassSharp } from "ionicons/icons";
 
-export const defaultAidServiceProfileImageUrl = "";
+export const defaultAidServiceProfileImageUrl = "/favicon.png";
 
 export interface IAidServiceProfileCardProps {
   aidServiceProfile: IAidServiceProfile;
