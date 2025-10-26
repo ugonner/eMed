@@ -5,7 +5,7 @@ import { formatCurrency } from "../../utils";
 import { IAidService } from "../interfaces/aid-service.interface";
 import { AidServiceActionMenu } from "./AidServiceActionMenu";
 
-export const defaultAidServiceImageUrl = "";
+export const defaultAidServiceImageUrl = "/favicon.png";
 export interface IAidServiceCardProps {
   aidService: IAidService;
   showMenu?: boolean;

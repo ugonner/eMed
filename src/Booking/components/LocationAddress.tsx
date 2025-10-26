@@ -220,7 +220,14 @@ export const LocationAddressManager = ({
         onDidDismiss={() => setOpenLocationAccuracyOverlay(false)}
       >
         <div className="ion-text-center">
-          <h3>Automatic Location Accuracy</h3>
+          <h3>
+            {
+              stopAutoLocationRef.current && (
+                <IonSpinner className="ion-margin-horizontal"/>
+              )
+            }
+            Automatic Location Accuracy
+          </h3>
 
           <p>
             <span style={{ fontSize: "2em" }}>
