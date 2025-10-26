@@ -32,7 +32,9 @@ export const AsyncHelperProvider = ({children}: React.PropsWithChildren) => {
     
     const handleAsyncError = (error: unknown, msg?: string) => {
         console.log(msg, (error as Error).message);
-        presentToastMessage(`${msg}: ${(error as Error).message}`)
+        const errMessage = (error as Error).message;
+        const outputMsg = /fetch/i.test(errMessage) || /time(\s)?out/i.test(errMessage) ? "Bad Network Connectivity" : `${msg}: ${errMessage}`;
+        presentToastMessage(outputMsg)
     }
 
     const initAsyncHelperProps: IAsyncProps = {
