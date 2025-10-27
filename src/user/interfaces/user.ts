@@ -1,6 +1,5 @@
 
 import { IAuthUser } from "../../auth/components/LoginOrRegister";
-import { UserCallState } from "../enums/user.enum";
 import { IAidService, ICallAidServiceProfileDTO } from "../../aid-service/interfaces/aid-service.interface";
 import { RoleDTO } from "../../auth/dtos/role.dto";
 import { IProfileCluster } from "./cluster";
@@ -26,7 +25,8 @@ export interface IProfile {
     gender?: string;
     createdAt?: string;
     profileClusters?: IProfileCluster[];
-    profileWallet?: IProfileWallet
+    profileWallet?: IProfileWallet;
+    account?: IAuthUserProfile;
     
 }
 
@@ -38,7 +38,6 @@ export interface IAuthUserProfile extends IAuthUser {
     firstName?: string;
     lastName?: string;
     profile?: IProfile;
-    aidServices: IAidService[];
 }
 
 export interface ILoginResponse extends IAuthUserProfile{

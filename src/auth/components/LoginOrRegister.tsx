@@ -35,6 +35,7 @@ export interface IAuthUser {
   phoneNumber?: string;
   firstName?: string;
   lastName?: string;
+
 }
 
 export interface ILoginOrCreateUserProps {
