@@ -16,7 +16,7 @@ export interface IInitContext {
     aidServicesRef: MutableRefObject<IAidService[]>;
     setReLoadEntities: Dispatch<SetStateAction<boolean>>;
     appSettings: IAppSettings | null;
-    updateAppSettings: (dto: Partial<IAppSettings>, config: {persist: boolean}) => void;
+    updateAppSettings: (dto: Partial<IAppSettings>, config: {persist: boolean; setState: boolean}) => void;
 }
 
 const initContext = createContext<IInitContext>({} as IInitContext);
@@ -59,10 +59,10 @@ export const InitContextProvider = ({children}: PropsWithChildren) => {
         getAidServices().catch((error) => console.log("Error setting init aidService ", (error as Error).message));
         entitiesLoadCountRef.current += entitiesLoadCountRef.current;
     }
-    const updateAppSettings = (dto: Partial<IAppSettings>, config: {persist: boolean}) => {
+    const updateAppSettings = (dto: Partial<IAppSettings>, config: {persist: boolean; setState: boolean}) => {
         const setting = getItem<IAppSettings>(LocalStorageEnum.APP_SETTINGS);
        if(config.persist)  setItem(LocalStorageEnum.APP_SETTINGS, {...(setting || {}), ...dto} as IAppSettings);
-        setAppSettings({...(setting || {}), ...dto});
+       if(config.setState) setAppSettings({...(setting || {}), ...dto});
     }
 
     useEffect(() => {

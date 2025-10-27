@@ -133,7 +133,7 @@ export const HomePage = () => {
               );
 
               const emergencyMsgBody = {
-                Message: `${user?.firstName} ${user?.lastName} is in need of ${emergencyService?.name}`,
+                Message: `${user?.firstName} ${user?.lastName} is in need of ${emergencyService?.name} ${user?.phoneNumber}`,
                 cost: formatCurrency(emergencyService?.serviceRate || 0),
                 follow: `${AppBaseUrl}${BookingRoutes.TRACK_LOCATION}?lat=${geoCoords?.latitude}&lon=${geoCoords?.longitude}`,
                 GeoAccuracy: geoCoords?.accuracy,
@@ -155,7 +155,7 @@ export const HomePage = () => {
      
       <IonPopover
         isOpen={!appSettings?.hideHealthTip}
-        onDidDismiss={() => updateAppSettings({hideHealthTip: true}, {persist: false})}
+        onDidDismiss={() => updateAppSettings({hideHealthTip: true}, {persist: false, setState: true})}
       >
         <div>
           <div className="ion-margin">
@@ -170,12 +170,12 @@ export const HomePage = () => {
                 const setting: IAppSettings = {
                   hideHealthTip: appSettings?.hideHealthTip ? false : true,
                 } as IAppSettings;
-                updateAppSettings(setting, {persist: true});
+                updateAppSettings(setting, {persist: true, setState: false});
               }}  
           
           >
             <IonIcon 
-            icon={appSettings?.hideHealthTip ? checkboxOutline : checkboxSharp} 
+            icon={appSettings?.hideHealthTip ? checkboxSharp : checkboxOutline} 
             />
             <IonLabel
             className="ion-margin-horizontal"
@@ -199,7 +199,7 @@ export const HomePage = () => {
           <IonButton
             expand="full"
             onClick={() => {
-              updateAppSettings({hideHealthTip: true}, {persist: false})
+              updateAppSettings({hideHealthTip: true}, {persist: false, setState: true})
             }}
           >
             Ok

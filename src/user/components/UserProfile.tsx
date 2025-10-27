@@ -46,7 +46,10 @@ export const UserProfile = ({
     <>
       <IonRow>
         <IonCol size="11">
-          <UserCard user={profileRef.current} />
+          <UserCard 
+          user={profileRef.current}
+          userRole={profileRef.current?.account?.role}
+          />
         </IonCol>
         <IonCol size="1">
           <UserMenu user={profileRef.current} />
