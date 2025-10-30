@@ -10,6 +10,7 @@ import {
   IonItem,
   IonLabel,
   IonRow,
+  IonSpinner,
   useIonRouter,
 } from "@ionic/react";
 import { useIInitContextStore } from "../../shared/contexts/InitContextProvider";
@@ -27,7 +28,14 @@ export const QuickActions = () => {
         <IonCol size="12">
           <IonItem>
             <IonLabel>
-              <h3>Services</h3>
+              <h3>
+                Services 
+                {
+                  aidServicesRef.current.length === 0 && (
+                    <IonSpinner />
+                  )
+                }
+              </h3>
             </IonLabel>
           </IonItem>
         </IonCol>

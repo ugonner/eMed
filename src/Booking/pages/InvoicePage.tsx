@@ -11,6 +11,7 @@ import {
   PaymentPurpose,
 } from "../../payment/enums/payment.enum";
 import { usePayment } from "../../payment/hooks/payment";
+import { NavigationBarGap } from "../../shared/components/partials/NavigationBarGap";
 
 export const InvoicePage = () => {
   const queryParams = new URLSearchParams(useLocation().search);
@@ -56,6 +57,7 @@ export const InvoicePage = () => {
         </span>
       </IonItem>
       <BookingInvoice booking={booking} />
+      <NavigationBarGap />
     </IonContent>
   );
 };

@@ -35,6 +35,7 @@ import { useAsyncHelpersContext } from "../../shared/contexts/async-helpers";
 import { IQueryResult } from "../../shared/interfaces/api-response";
 import { RoleDTO } from "../../auth/dtos/role.dto";
 import { IAuthUserProfile, IProfile } from "../interfaces/user";
+import { NavigationBarGap } from "../../shared/components/partials/NavigationBarGap";
 
 export const UserDashboard = () => {
   const { setLoading, handleAsyncError } = useAsyncHelpersContext();
@@ -342,6 +343,7 @@ export const UserDashboard = () => {
             ></CreateRole>
           </IonContent>
         </IonModal>
+        <NavigationBarGap />
       </IonContent>
     </>
   );

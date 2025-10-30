@@ -109,8 +109,7 @@ export const LocationAddressManager = ({
     }
   };
 
-  useEffect(() => {
-    const autoGetLocationCords = async () => {
+  const autoGetLocationCords = async () => {
       try {
         if (!openLocationAddressOverlay) setOpenLocationAccuracyOverlay(true);
         const cordsRes = await getLocationCords();
@@ -130,8 +129,10 @@ export const LocationAddressManager = ({
         resetLocationStartData();
       }
     };
+
+  useEffect(() => {
     autoGetLocationCords();
-  }, [reloadLocation]);
+  }, []);
 
   return (
     <div>
@@ -164,7 +165,8 @@ export const LocationAddressManager = ({
               aria-label="reload location"
               onClick={() => {
                 stopAutoLocationRef.current = false;
-                setReloadLocation(!reloadLocation);
+                setOpenLocationAccuracyOverlay(true);
+                autoGetLocationCords();
               }}
             >
               <IonIcon icon={reloadSharp}></IonIcon>
@@ -222,7 +224,7 @@ export const LocationAddressManager = ({
         <div className="ion-text-center">
           <h3>
             {
-              stopAutoLocationRef.current && (
+              (!stopAutoLocationRef.current) && (
                 <IonSpinner className="ion-margin-horizontal"/>
               )
             }
@@ -234,7 +236,7 @@ export const LocationAddressManager = ({
               {!locationCordData?.accuracy && (
                 <IonSpinner className="ion-margin-horizontal" />
               )}
-              {locationCordData?.accuracy}m
+              {locationCordData?.accuracy?.toFixed(2)}m
             </span>
           </p>
           <p>

@@ -4,6 +4,7 @@ import { IPost } from "../interfaces/post";
 import { Posts } from "../datasets/posts";
 import { IonContent } from "@ionic/react";
 import { PostDetail } from "../components/PostDetail";
+import { NavigationBarGap } from "../../shared/components/partials/NavigationBarGap";
 
 export const PostDetailPage = () => {
     const queryParams = new URLSearchParams(useLocation().search);
@@ -22,6 +23,7 @@ export const PostDetailPage = () => {
     return (
         <IonContent>
             <PostDetail post={post} />
+        <NavigationBarGap />
         </IonContent>
     )
 }

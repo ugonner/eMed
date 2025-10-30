@@ -10,6 +10,7 @@ import { AuthGuard } from "../../auth/guards/AuthGuard";
 import { LocationTrackerPage } from "../pages/LocationTrackerPage";
 import { UserBookingsPage } from "../pages/UsereBookingsPage";
 import { NavigationBarGap } from "../../shared/components/partials/NavigationBarGap";
+import { BaseMenu } from "../../shared/components/menus/BaseMenu";
 
 export const BookingLayout = () => {
     return (
@@ -17,7 +18,6 @@ export const BookingLayout = () => {
          <IonPage>
             <BaseHeader title="Booking" />
             <IonContent id="base-menu-content">
-                
             <IonRouterOutlet>
                 <Route path={BookingRoutes.BOOK_SERVICE} component={BookAidServicePage} />
                 <Route path={BookingRoutes.INVOICE} component={InvoicePage} />
@@ -26,7 +26,7 @@ export const BookingLayout = () => {
                 <Route path={BookingRoutes.USER_BOOKINGS} component={UserBookingsPage} />
             </IonRouterOutlet>
              
-                <NavigationBarGap />
+                {/* <NavigationBarGap /> */}
             </IonContent>
             
         </IonPage>

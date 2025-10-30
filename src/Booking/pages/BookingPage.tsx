@@ -6,6 +6,7 @@ import { IBooking } from "../interfaces/booking";
 import { IonContent } from "@ionic/react";
 import { BookingInvoice } from "../components/BookingInvoice";
 import { BookingDetail } from "../components/BookingDetail";
+import { NavigationBarGap } from "../../shared/components/partials/NavigationBarGap";
 
 export const BookingPage = () => {
     const queryParams = new URLSearchParams(useLocation().search);
@@ -31,6 +32,7 @@ export const BookingPage = () => {
     return (
         <IonContent>
             <BookingDetail booking={booking} />
+            <NavigationBarGap />
         </IonContent>
     )
 }

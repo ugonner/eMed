@@ -10,6 +10,7 @@ import { ManageUserClusters } from "../components/cluster/ManageUserClusters";
 import { LocalStorageEnum } from "../../shared/enums";
 import { IAppSettings } from "../../shared/interfaces/app-settings";
 import { useAsyncHelpersContext } from "../../shared/contexts/async-helpers";
+import { NavigationBarGap } from "../../shared/components/partials/NavigationBarGap";
 
 export const UserProfilePage = () => {
    const {getItem, setItem} = useLocalStorage();
@@ -103,6 +104,7 @@ const res = await getData<IProfileWallet>(`${APIBaseURL}/transaction/wallet`);
             </IonButton>
           </IonContent>
         </IonModal>
+        <NavigationBarGap />
             </IonContent>
         </>
     )

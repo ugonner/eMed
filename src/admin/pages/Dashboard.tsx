@@ -21,6 +21,7 @@ import { formatCamelCaseToSentence } from "../../shared/helpers";
 import { ServiceList } from "../../aid-service/components/ServiceList";
 import { ServiceClusters } from "../../user/components/cluster/ServiceClusters";
 import { ServiceRoles } from "../../user/components/role/ServiceRoles";
+import { NavigationBarGap } from "../../shared/components/partials/NavigationBarGap";
 
 export const AdminDashboard = () => {
   const { clustersRef, aidServicesRef, rolesRef, tagsRef } =
@@ -108,6 +109,7 @@ export const AdminDashboard = () => {
         </IonGrid>
        </IonContent>
       </IonModal>
+      <NavigationBarGap />
     </IonContent>
   );
 };

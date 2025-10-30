@@ -4,6 +4,8 @@ import {
   home,
   homeOutline,
   homeSharp,
+  listOutline,
+  listSharp,
   personOutline,
   personSharp,
 } from "ionicons/icons";
@@ -21,6 +23,8 @@ import {
   useIonRouter,
 } from "@ionic/react";
 import { useLocation } from "react-router";
+import { AidServiceRoutes } from "../../../aid-service/enums/routes";
+import { AuthRoutes } from "../../../auth/enums/routes";
 export interface INavigationItem {
   text: string;
   activeIcon: string;
@@ -31,7 +35,7 @@ export interface INavigationItem {
 
 export const NavigationBar = () => {
   const router = useIonRouter();
-  const {pathname} = useLocation();;
+  const { pathname } = useLocation();
 
   const navItems: INavigationItem[] = [
     {
@@ -55,19 +59,41 @@ export const NavigationBar = () => {
       pathDomain: "/user",
       routeLink: `${UserRoutes.PROFILE}`,
     },
+    {
+      text: "Services",
+      activeIcon: listSharp,
+      inactiveIcon: listOutline,
+      pathDomain: "/aid-service",
+      routeLink: `${AidServiceRoutes.AID_SERVICE_ALL}`,
+    },
   ];
 
   return (
     <>
-    
-      <IonTabBar slot="bottom">
-        {navItems.map((item, index) => (
-          <IonTabButton key={index} tab={item.pathDomain} href={item.routeLink}>
-            <IonIcon icon={ new RegExp(item.pathDomain, "i").test(pathname) ? item.activeIcon : item.inactiveIcon} />
-            <IonLabel>{item.text}</IonLabel>
-          </IonTabButton>
-        ))}
-      </IonTabBar>
+      {new RegExp(HomeRoutes.SPLASH_PAGE, "i").test(pathname) ||
+      new RegExp(HomeRoutes.ONBOARDING, "i").test(pathname) ||
+      new RegExp(AuthRoutes.HOME, "i").test(pathname) ? (
+        <div></div>
+      ) : (
+        <IonTabBar slot="bottom">
+          {navItems.map((item, index) => (
+            <IonTabButton
+              key={index}
+              tab={item.pathDomain}
+              href={item.routeLink}
+            >
+              <IonIcon
+                icon={
+                  new RegExp(item.pathDomain, "i").test(pathname)
+                    ? item.activeIcon
+                    : item.inactiveIcon
+                }
+              />
+              <IonLabel>{item.text}</IonLabel>
+            </IonTabButton>
+          ))}
+        </IonTabBar>
+      )}
     </>
   );
 };

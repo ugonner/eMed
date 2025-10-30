@@ -78,9 +78,9 @@ const App: React.FC = () => {
         <InitContextProvider>
           <AuthGuardContextProvider>
               <BaseLayout>
-               
               <BaseMenu />
               <AdminMenu />
+               
               <IonReactRouter>
                   
                 <IonRouterOutlet>
@@ -102,7 +102,7 @@ const App: React.FC = () => {
                     <Redirect to={HomeRoutes.SPLASH_PAGE} />
                   
                 </IonRouterOutlet>
-                {/* <NavigationBar /> */}
+                <NavigationBar />
                 
               </IonReactRouter>
               </BaseLayout>

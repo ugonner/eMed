@@ -53,6 +53,7 @@ import { PostCard } from "../../post/components/PostCard";
 import { IPost } from "../../post/interfaces/post";
 import { PostRoutes } from "../../post/enums/route";
 import { ShortCutButtons } from "../components/ShortCutButtons";
+import { NavigationBarGap } from "../../shared/components/partials/NavigationBarGap";
 
 export const callCenterPhoneNumber = "2347034667861";
 export const HomePage = () => {
@@ -133,7 +134,7 @@ export const HomePage = () => {
               );
 
               const emergencyMsgBody = {
-                Message: `${user?.firstName} ${user?.lastName} is in need of ${emergencyService?.name} ${user?.phoneNumber}`,
+                Message: `${user?.firstName} ${user?.lastName}  ${user?.phoneNumber || ""} is in need of ${emergencyService?.name || ""} `,
                 cost: formatCurrency(emergencyService?.serviceRate || 0),
                 follow: `${AppBaseUrl}${BookingRoutes.TRACK_LOCATION}?lat=${geoCoords?.latitude}&lon=${geoCoords?.longitude}`,
                 GeoAccuracy: geoCoords?.accuracy,
@@ -206,6 +207,7 @@ export const HomePage = () => {
           </IonButton>
         </div>
       </IonPopover>
+      <NavigationBarGap />
     </IonContent>
   );
 };

@@ -22,6 +22,7 @@ import { AidServiceCard } from "../components/AidServiceCard";
 import { useAuthGuardContextStore } from "../../auth/contexts/AuthGuardContext";
 import { ServiceProfiles } from "../components/ServiceProfiles";
 import { ServiceBookings } from "../../Booking/components/ServiceBookings";
+import { NavigationBarGap } from "../../shared/components/partials/NavigationBarGap";
 
 export const AidServicePage = () => {
   const { setLoading, handleAsyncError } = useAsyncHelpersContext();
@@ -101,6 +102,7 @@ export const AidServicePage = () => {
                   </IonCol>
                 </IonRow>
         </IonGrid>
+        <NavigationBarGap />
       </IonContent>
     </>
   );
