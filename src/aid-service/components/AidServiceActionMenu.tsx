@@ -37,8 +37,8 @@ export const AidServiceActionMenu = ({aidService}: IAidServiceActionMenuProps) =
     };
 
     useEffect(() => {
-        if(isAdmin) actionsRef.current = Object.values(AidServiceActionMenu);
-        
+        if(isAdmin) actionsRef.current = Object.values(AidServiceActions);
+        else actionsRef.current = [AidServiceActions.BOOK]
     }, []);
 
 
