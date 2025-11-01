@@ -6,7 +6,6 @@ import { UserDashboard } from "../pages/UserDashboard"
 import { ServiceClusters } from "../components/cluster/ServiceClusters"
 import { BaseHeader } from "../../shared/components/partials/BaseHeader"
 import { AuthGuard } from "../../auth/guards/AuthGuard"
-import { NavigationBarGap } from "../../shared/components/partials/NavigationBarGap"
 
 export const UserLayout = () => {
     return (
@@ -15,13 +14,14 @@ export const UserLayout = () => {
         <IonPage>
            <BaseHeader title="Account" />
            <IonContent id="base-menu-content">
+        
              <IonRouterOutlet>
                 <Route path={UserRoutes.HOME} component={UserProfilePage} />
                 <Route path={UserRoutes.PROFILE} component={UserProfilePage} />
                 <Route path={UserRoutes.DASHBOARD} component={UserDashboard} />
                 <Route path={UserRoutes.CLUSTER_DASHBOARD} component={ServiceClusters} />
             </IonRouterOutlet>
-              <NavigationBarGap />
+              {/* <NavigationBarGap /> */}
            </IonContent>
         </IonPage>
         </AuthGuard>

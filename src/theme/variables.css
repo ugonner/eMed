@@ -1,2 +1,37 @@
 /* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ion-background-color: #000000;
+    --ion-text-color: #ffffff;
+  }
+
+  ion-button,
+  ion-label,
+  a {
+    color: #ffffff !important;
+  }
+  
+  ion-label p {
+    font-weight: bolder !important;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --ion-background-color: #ffffff;
+    --ion-text-color: #000000;
+  }
+
+  ion-button,
+  ion-label,
+  ion-label p,
+  a {
+    color: #000000 !important;
+  }
+  ion-label p {
+    font-weight: bolder !important;
+  }
+}
+

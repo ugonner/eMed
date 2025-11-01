@@ -109,8 +109,7 @@ export const LocationAddressManager = ({
     }
   };
 
-  useEffect(() => {
-    const autoGetLocationCords = async () => {
+  const autoGetLocationCords = async () => {
       try {
         if (!openLocationAddressOverlay) setOpenLocationAccuracyOverlay(true);
         const cordsRes = await getLocationCords();
@@ -130,8 +129,10 @@ export const LocationAddressManager = ({
         resetLocationStartData();
       }
     };
+
+  useEffect(() => {
     autoGetLocationCords();
-  }, [reloadLocation]);
+  }, []);
 
   return (
     <div>
@@ -164,7 +165,8 @@ export const LocationAddressManager = ({
               aria-label="reload location"
               onClick={() => {
                 stopAutoLocationRef.current = false;
-                setReloadLocation(!reloadLocation);
+                setOpenLocationAccuracyOverlay(true);
+                autoGetLocationCords();
               }}
             >
               <IonIcon icon={reloadSharp}></IonIcon>
@@ -215,14 +217,16 @@ export const LocationAddressManager = ({
         </IonContent>
       </IonModal>
 
-      <IonPopover
+      <IonModal
         isOpen={openLocationAccuracyOverlay}
         onDidDismiss={() => setOpenLocationAccuracyOverlay(false)}
       >
-        <div className="ion-text-center">
-          <h3>
+       <IonContent>
+         <div style={{display: "flex", justifyContent: "center", alignContent: "center"}} className="ion-text-center">
+          <div>
+            <h3>
             {
-              stopAutoLocationRef.current && (
+              (!stopAutoLocationRef.current) && (
                 <IonSpinner className="ion-margin-horizontal"/>
               )
             }
@@ -234,7 +238,7 @@ export const LocationAddressManager = ({
               {!locationCordData?.accuracy && (
                 <IonSpinner className="ion-margin-horizontal" />
               )}
-              {locationCordData?.accuracy}m
+              {locationCordData?.accuracy?.toFixed(2)}m
             </span>
           </p>
           <p>
@@ -249,8 +253,10 @@ export const LocationAddressManager = ({
           >
             Don't Wait, Continue with this accuracy
           </IonButton>
+          </div>
         </div>
-      </IonPopover>
+       </IonContent>
+      </IonModal>
     </div>
   );
 };

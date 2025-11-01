@@ -28,7 +28,7 @@ export const AdminLayout = () => {
         <Route path={AdminRoutes.TRANSACTION} component={PaymentTransactionDashboard} />
         <Route path={AdminRoutes.REVIEWS} component={ReviewDashboard} />
       </IonRouterOutlet>
-      <NavigationBarGap />
+      {/* <NavigationBarGap /> */}
       </IonContent>
       
     </IonPage>

@@ -1,5 +1,5 @@
 export const NavigationBarGap = () => {
     return (
-        <div>  &nbsp; </div>
+        <div style={{height: "100px"}}>  &nbsp; </div>
     )
 }

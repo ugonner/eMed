@@ -24,7 +24,7 @@ export const AidServiceActionMenu = ({aidService}: IAidServiceActionMenuProps) =
 
 
     const takeAction = (action: AidServiceActions) => {
-        if(action === AidServiceActions.BOOK) router.push(BookingRoutes.BOOK_SERVICE);
+        if(action === AidServiceActions.BOOK) router.push(`${BookingRoutes.BOOK_SERVICE}?asi=${aidService.id}`);
         else if(action === AidServiceActions.CREATE) router.push(AidServiceRoutes.AID_SERVICE_CREATE);
         else if(action === AidServiceActions.MANAGE) setOpenEditAidServiceOverlay(true);
         else if(action === AidServiceActions.DELETE) {
@@ -37,8 +37,8 @@ export const AidServiceActionMenu = ({aidService}: IAidServiceActionMenuProps) =
     };
 
     useEffect(() => {
-        if(isAdmin) actionsRef.current = Object.values(AidServiceActionMenu);
-        
+        if(isAdmin) actionsRef.current = Object.values(AidServiceActions);
+        else actionsRef.current = [AidServiceActions.BOOK]
     }, []);
 
 

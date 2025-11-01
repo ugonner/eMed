@@ -3,9 +3,10 @@ import { useAsyncHelpersContext } from "../../shared/contexts/async-helpers";
 import { useEffect, useState } from "react";
 import { IAidService } from "../../aid-service/interfaces/aid-service.interface";
 import { APIBaseURL, getData } from "../../shared/api/base";
-import { IonCol, IonContent, IonGrid, IonHeader, IonPage, IonRow, IonTitle, IonToolbar } from "@ionic/react";
+import { IonContent } from "@ionic/react";
 import { BookService } from "../components/BookService";
 import { IBooking } from "../interfaces/booking";
+import { NavigationBarGap } from "../../shared/components/partials/NavigationBarGap";
 
 export const BookAidServicePage = () => {
     const {setLoading, handleAsyncError} = useAsyncHelpersContext();
@@ -32,7 +33,6 @@ export const BookAidServicePage = () => {
 
     const getBooking = async () => {
         try{
-            
             setLoading({isLoading: true, loadingMessage: "Fetching booking detail"});
             const res = await getData<IBooking>(`${APIBaseURL}/booking/${bookingId}`);
             setBooking(res);
@@ -51,6 +51,7 @@ export const BookAidServicePage = () => {
         <IonContent>
             <h3>Book Service</h3>
             <BookService aidService={aidService} booking={booking} />
+            <NavigationBarGap />
         </IonContent>
                     
         

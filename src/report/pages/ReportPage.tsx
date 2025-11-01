@@ -7,6 +7,7 @@ import { IonCol, IonContent, IonGrid, IonHeader, IonRow, IonTitle } from "@ionic
 import { ReportCard } from "../components/ReportCard";
 import { ReportMenu } from "../components/ReportMenu";
 import { ReportComments } from "../components/ReportComments";
+import { NavigationBarGap } from "../../shared/components/partials/NavigationBarGap";
 
 export const ReportPage = () => {
     const {setLoading, handleAsyncError} = useAsyncHelpersContext();
@@ -52,6 +53,7 @@ export const ReportPage = () => {
                     </IonCol>
                 </IonRow>
             </IonGrid>
+            <NavigationBarGap />
         </IonContent>
         
         </>

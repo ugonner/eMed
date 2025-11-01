@@ -21,13 +21,14 @@ export const AuthGuardContextProvider = ({children}: React.PropsWithChildren) =>
     const user: IAuthUserProfile | null = localAuthUser != undefined ? JSON.parse(localAuthUser) : null;
     
     const [isLoggedIn, setIsLoggedIn] = useState( user ? true : false);
-    const [isAdmin, setIsAdmin] = useState((user?.role?.id && (user?.role?.id === 1)) ? true : false);
+    
 
     const [openAuthModal, setOpenAuthModal] = useState(false);
+
+    const isAdmin = (/admin/i.test(user?.role?.name || "")) ? true : false;
     const logOutUser = () => {
       localStorage.clear();
         setIsLoggedIn(false);
-        setIsAdmin(false);
         router.push(AuthRoutes.LOGIN);
     }
     

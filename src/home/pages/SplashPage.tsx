@@ -14,6 +14,7 @@ import { IAppSettings } from "../../shared/interfaces/app-settings";
 import { LocalStorageEnum } from "../../shared/enums";
 import { HomeRoutes } from "../enums/routes";
 import "./SplashView.css";
+import { NavigationBarGap } from "../../shared/components/partials/NavigationBarGap";
 
 export const SplashPage = () => {
   const router = useIonRouter();
@@ -77,6 +78,7 @@ export const SplashPage = () => {
             
           </div>
         </div>
+        <NavigationBarGap />
       </IonContent>
     </IonPage>
   );

@@ -6,6 +6,7 @@ import { IQueryResult } from "../../shared/interfaces/api-response";
 import { AidServiceCard } from "../components/AidServiceCard";
 import { useIInitContextStore } from "../../shared/contexts/InitContextProvider";
 import { AidServiceActionMenu } from "../components/AidServiceActionMenu";
+import { NavigationBarGap } from "../../shared/components/partials/NavigationBarGap";
 
 export const AidServicesPage = () => {
   const { aidServicesRef } = useIInitContextStore();
@@ -27,6 +28,7 @@ export const AidServicesPage = () => {
           </IonRow>
         ))}
       </IonGrid>
+      <NavigationBarGap />
     </IonContent>
   );
 };

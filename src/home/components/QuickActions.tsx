@@ -10,6 +10,7 @@ import {
   IonItem,
   IonLabel,
   IonRow,
+  IonSpinner,
   useIonRouter,
 } from "@ionic/react";
 import { useIInitContextStore } from "../../shared/contexts/InitContextProvider";
@@ -27,7 +28,14 @@ export const QuickActions = () => {
         <IonCol size="12">
           <IonItem>
             <IonLabel>
-              <h3>Services</h3>
+              <h3>
+                Services 
+                {
+                  aidServicesRef.current.length === 0 && (
+                    <IonSpinner />
+                  )
+                }
+              </h3>
             </IonLabel>
           </IonItem>
         </IonCol>
@@ -42,6 +50,7 @@ export const QuickActions = () => {
                 </IonAvatar>
                 <IonLabel className="ion-margin-horizontal">
                   <h2
+                  className="ion-text-color-danger ion-text-danger"
                     role="link"
                     onClick={() =>
                       router.push(
@@ -53,6 +62,7 @@ export const QuickActions = () => {
                   </h2>
                   <p>{aidService.description?.substring(0, 140)}</p>
                   <IonButton
+                  className="ion-text-color-warning"
                     expand="full"
                     fill="clear"
                     size="small"
