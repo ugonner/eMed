@@ -50,6 +50,7 @@ export const QuickActions = () => {
                 </IonAvatar>
                 <IonLabel className="ion-margin-horizontal">
                   <h2
+                  className="ion-text-color-danger ion-text-danger"
                     role="link"
                     onClick={() =>
                       router.push(
@@ -61,6 +62,7 @@ export const QuickActions = () => {
                   </h2>
                   <p>{aidService.description?.substring(0, 140)}</p>
                   <IonButton
+                  className="ion-text-color-warning"
                     expand="full"
                     fill="clear"
                     size="small"

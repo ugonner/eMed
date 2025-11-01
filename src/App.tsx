@@ -58,12 +58,11 @@ import { NavigationBar } from "./shared/components/partials/NavigationBar";
 import { PostRoutes } from "./post/enums/route";
 import { PostLayout } from "./post/layouts/PostLayout";
 import { OnboardingPage } from "./home/pages/OnboardingPage";
-import { useLocalStorage } from "./utils";
-import { IAppSettings } from "./shared/interfaces/app-settings";
-import { LocalStorageEnum } from "./shared/enums";
 import { useEffect, useState } from "react";
 import { SplashScreen } from "@capacitor/splash-screen";
 import { SplashPage } from "./home/pages/SplashPage";
+
+import "./App.css";
 
 setupIonicReact();
 const App: React.FC = () => {

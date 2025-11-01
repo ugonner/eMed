@@ -217,12 +217,14 @@ export const LocationAddressManager = ({
         </IonContent>
       </IonModal>
 
-      <IonPopover
+      <IonModal
         isOpen={openLocationAccuracyOverlay}
         onDidDismiss={() => setOpenLocationAccuracyOverlay(false)}
       >
-        <div className="ion-text-center">
-          <h3>
+       <IonContent>
+         <div style={{display: "flex", justifyContent: "center", alignContent: "center"}} className="ion-text-center">
+          <div>
+            <h3>
             {
               (!stopAutoLocationRef.current) && (
                 <IonSpinner className="ion-margin-horizontal"/>
@@ -251,8 +253,10 @@ export const LocationAddressManager = ({
           >
             Don't Wait, Continue with this accuracy
           </IonButton>
+          </div>
         </div>
-      </IonPopover>
+       </IonContent>
+      </IonModal>
     </div>
   );
 };
